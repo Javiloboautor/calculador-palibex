@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Calculador de Precios 2026</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2a5298">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Calculador">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1a2535;
+    --panel: #1f2d40;
+    --card: #243347;
+    --header-bg: #2a5298;
+    --header-dark: #1e3a6e;
+    --accent: #4a90d9;
+    --accent2: #5ba3e8;
+    --gold: #e8b84b;
+    --green: #4caf7d;
+    --red: #e05c5c;
+    --orange: #e8863a;
+    --text: #dce8f5;
+    --text-dim: #8aa5c0;
+    --border: #2e4060;
+    --input-bg: #131d2a;
+    --input-border: #3a5070;
+    --label: #9bbdd8;
+    --highlight: #e9f2fb;
+    --total-bg: #2a5298;
+    --sobred-bg: #1e3a2a;
+    --sobred-border: #2d6040;
+    --row-alt: #1c2838;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* ── HEADER ── */
+  .app-header {
+    background: linear-gradient(135deg, var(--header-dark) 0%, var(--header-bg) 60%, #3b6cc4 100%);
+    padding: 18px 32px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid var(--gold);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+  .app-header .logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .logo-icon {
+    width: 44px; height: 44px;
+    background: var(--gold);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 2px 10px rgba(232,184,75,0.4);
+  }
+  .logo-text h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px; font-weight: 800;
+    letter-spacing: 1.5px;
+    color: #fff;
+    text-transform: uppercase;
+  }
+  .logo-text span {
+    font-size: 11px; color: var(--gold); letter-spacing: 2px; font-weight: 600; text-transform: uppercase;
+  }
+  .header-badge {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 12px; color: #c0d8f0; letter-spacing: 1px; font-weight: 600;
+  }
+
+  /* ── LAYOUT ── */
+  .main-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px 20px;
+    gap: 20px;
+  }
+
+  /* ── SECTION CARDS ── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .card-header {
+    background: linear-gradient(90deg, var(--header-dark), var(--header-bg));
+    padding: 10px 16px;
+    display: flex; align-items: center; gap: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .card-header .icon { font-size: 16px; }
+  .card-header h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; color: #fff;
+  }
+  .card-body { padding: 16px; }
+
+  /* ── GRID INPUTS ── */
+  .input-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .input-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field label {
+    font-size: 10px; font-weight: 600; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--label);
+  }
+  .field input, .field select {
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    font-size: 14px;
+    padding: 8px 10px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+  }
+  .field input:focus, .field select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(74,144,217,0.2);
+  }
+  .field input.computed {
+    background: #0f1a26;
+    color: var(--accent2);
+    font-weight: 600;
+    cursor: default;
+  }
+  .field input.warn { border-color: var(--red); color: var(--red); }
+  .field input.ok { border-color: var(--green); color: var(--green); }
+
+  /* ── TIPO PALET BADGE ── */
+  .tipo-badge {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700; font-size: 13px; letter-spacing: 1px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    text-align: center;
+  }
+  .tipo-badge.sobred { background: var(--orange); }
+
+  /* ── PRECIOS TABLE ── */
+  .precios-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .info-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 7px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--row-alt);
+    margin-bottom: 6px;
+  }
+  .info-row:last-child { margin-bottom: 0; }
+  .info-row .lbl {
+    font-size: 11px; font-weight: 600; color: var(--label);
+    text-transform: uppercase; letter-spacing: 0.8px;
+  }
+  .info-row .val {
+    font-size: 14px; font-weight: 600; color: var(--text);
+    font-family: 'Barlow Condensed', sans-serif;
+  }
+  .info-row .val.money { color: var(--accent2); }
+  .info-row .val.zone { color: var(--gold); }
+  .info-row .val.tarif { color: #b0d4f5; font-size: 12px; }
+  .info-row .val.yes { color: var(--orange); }
+  .info-row .val.no { color: var(--green); }
+
+  /* ── LLAMADA ENTREGA TOGGLE ── */
+  .toggle-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--row-alt);
+    margin-bottom: 6px;
+  }
+  .toggle-row label { font-size: 11px; font-weight: 600; color: var(--label); text-transform: uppercase; letter-spacing: 0.8px; }
+  .toggle-switch { cursor: pointer; display: flex; align-items: center; gap: 8px; margin-left: auto; }
+  .toggle-switch input { display: none; }
+  .toggle-track {
+    width: 40px; height: 20px;
+    background: #2a3a50;
+    border-radius: 10px;
+    position: relative;
+    border: 1px solid var(--border);
+    transition: background 0.2s;
+  }
+  .toggle-track::after {
+    content: '';
+    position: absolute; top: 2px; left: 2px;
+    width: 14px; height: 14px;
+    background: #556a80;
+    border-radius: 50%;
+    transition: transform 0.2s, background 0.2s;
+  }
+  .toggle-switch input:checked + .toggle-track { background: var(--green); border-color: var(--green); }
+  .toggle-switch input:checked + .toggle-track::after { transform: translateX(20px); background: #fff; }
+  .toggle-label { font-size: 12px; font-weight: 600; color: var(--text-dim); min-width: 24px; }
+
+  /* ── TOTALES ── */
+  .totales-bar {
+    background: linear-gradient(135deg, var(--header-dark) 0%, var(--header-bg) 100%);
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    padding: 16px 20px;
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr 1px 1fr;
+    gap: 0;
+    margin-top: 4px;
+    box-shadow: 0 0 30px rgba(74,144,217,0.15);
+  }
+  .total-item {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    padding: 0 16px;
+  }
+  .total-item .t-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; color: rgba(255,255,255,0.6);
+  }
+  .total-item .t-value {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 26px; font-weight: 800; color: #fff;
+    line-height: 1;
+  }
+  .total-item .t-value.gold { color: var(--gold); }
+  .total-item .t-value.green { color: #6de0a0; }
+  .total-sep {
+    background: rgba(255,255,255,0.15);
+  }
+
+  /* ── CALCULADOR MULTIPALÉS ── */
+  .palets-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .palets-table thead tr {
+    background: linear-gradient(90deg, var(--header-dark), var(--header-bg));
+  }
+  .palets-table th {
+    padding: 8px 10px;
+    text-align: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    color: rgba(255,255,255,0.8);
+  }
+  .palets-table td {
+    padding: 6px 8px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .palets-table tr:nth-child(even) td { background: var(--row-alt); }
+  .palets-table td input {
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 4px;
+    color: var(--text);
+    font-size: 13px; font-family: 'Barlow', sans-serif;
+    padding: 4px 6px;
+    width: 70px; text-align: center; outline: none;
+  }
+  .palets-table td input:focus { border-color: var(--accent); }
+  .palets-table .total-row td {
+    background: rgba(74,144,217,0.12);
+    font-weight: 700; color: var(--gold);
+    font-family: 'Barlow Condensed', sans-serif; font-size: 14px;
+  }
+  .palets-table td.tipo-cell {
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+    color: var(--accent2); font-size: 13px;
+  }
+  .palets-table td.precio-cell {
+    font-family: 'Barlow Condensed', sans-serif; color: var(--accent2);
+  }
+  .palets-table td.ptotal-cell {
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 700; color: var(--green);
+  }
+  .add-btn {
+    margin-top: 10px;
+    background: rgba(74,144,217,0.15);
+    border: 1px dashed var(--accent);
+    color: var(--accent2);
+    border-radius: 6px;
+    padding: 7px 16px;
+    font-size: 12px; font-weight: 600; cursor: pointer; width: 100%;
+    transition: background 0.2s;
+  }
+  .add-btn:hover { background: rgba(74,144,217,0.25); }
+  .del-btn {
+    background: rgba(224,92,92,0.15); border: 1px solid rgba(224,92,92,0.3);
+    color: var(--red); border-radius: 4px; padding: 2px 7px; cursor: pointer;
+    font-size: 12px;
+  }
+  .del-btn:hover { background: rgba(224,92,92,0.3); }
+
+  /* ── SOBREDIMENSIÓN PANEL ── */
+  .sobred-card .card-header { background: linear-gradient(90deg, #1e3a2a, #2d6040); }
+  .sobred-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 12px; border-radius: 20px;
+    font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+  }
+  .sobred-badge.yes { background: rgba(232,134,58,0.2); color: var(--orange); border: 1px solid var(--orange); }
+  .sobred-badge.no  { background: rgba(76,175,125,0.15); color: var(--green);  border: 1px solid var(--green);  }
+
+  /* ── WARNING BAR ── */
+  .warn-bar {
+    background: rgba(224,92,92,0.12);
+    border: 1px solid var(--red);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 12px; color: var(--red);
+    display: none; margin-top: 8px;
+  }
+  .warn-bar.show { display: block; }
+  .andorra-note {
+    font-size: 11px; color: var(--gold);
+    background: rgba(232,184,75,0.08);
+    border: 1px solid rgba(232,184,75,0.3);
+    border-radius: 6px; padding: 7px 10px; margin-top: 8px;
+    display: none;
+  }
+  .andorra-note.show { display: block; }
+
+  /* ── CALC BTN ── */
+  .calc-btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--header-dark) 0%, var(--accent) 100%);
+    border: none; border-radius: 8px;
+    color: #fff;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
+    padding: 14px;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: opacity 0.2s, transform 0.1s;
+    box-shadow: 0 4px 15px rgba(74,144,217,0.3);
+  }
+  .calc-btn:hover { opacity: 0.92; transform: translateY(-1px); }
+  .calc-btn:active { transform: translateY(0); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1100px) {
+    .main-layout { grid-template-columns: 1fr; }
+    .input-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .app-header { padding: 14px 16px; }
+    .main-layout { padding: 12px; }
+    .input-grid { grid-template-columns: repeat(2, 1fr); }
+    .totales-bar { grid-template-columns: 1fr; gap: 10px; }
+    .total-sep { display: none; }
+  }
+
+  .col-left { grid-column: 1; display: flex; flex-direction: column; gap: 16px; }
+  .col-right { grid-column: 2; display: flex; flex-direction: column; gap: 16px; }
+
+  .full-row { grid-column: 1 / -1; }
+
+  select option { background: #1a2535; }
+
+  /* ── BANNER ACTUALIZACIÓN ── */
+  #update-banner {
+    display: none;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(90deg, #1e3a6e, #2a5298);
+    border-top: 2px solid var(--gold);
+    padding: 10px 24px;
+    z-index: 9999;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
+  }
+  #update-banner.show { display: flex; }
+  #update-banner .upd-msg { color: #fff; font-size: 13px; flex: 1; }
+  #update-banner .upd-msg strong { color: var(--gold); }
+  #update-banner .upd-btn {
+    background: var(--gold); color: #1a2535;
+    border: none; border-radius: 6px;
+    padding: 7px 18px; font-weight: 700; font-size: 13px;
+    cursor: pointer; font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+  #update-banner .upd-close {
+    background: transparent; border: none; color: rgba(255,255,255,0.5);
+    cursor: pointer; font-size: 18px; padding: 0 4px;
+  }
+</style>
+</head>
+<body>
+
+
+<!-- Banner de actualización -->
+<div id="update-banner">
+  <span class="upd-msg" id="upd-msg">🔄 Nueva versión disponible...</span>
+  <button class="upd-btn" id="upd-btn" onclick="installUpdate()">Instalar ahora</button>
+  <button class="upd-close" onclick="document.getElementById("update-banner").classList.remove("show")">✕</button>
+</div>
+<header class="app-header">
+  <div class="logo">
+    <div class="logo-icon">🏷️</div>
+    <div class="logo-text">
+      <h1>Calculador de Precios</h1>
+      <span>Palibex · Tarifas 2026</span>
+    </div>
+  </div>
+  <div class="header-badge">VERSIÓN 2026</div>
+</header>
+
+<div class="main-layout">
+
+  <!-- LEFT COLUMN -->
+  <div class="col-left">
+
+    <!-- DIMENSIONES -->
+    <div class="card">
+      <div class="card-header">
+        <span class="icon">📐</span>
+        <h2>Dimensiones del Palé</h2>
+      </div>
+      <div class="card-body">
+        <div class="input-grid">
+          <div class="field">
+            <label>Largo (cm)</label>
+            <input type="number" id="largo" value="220" min="1" oninput="calcular()">
+          </div>
+          <div class="field">
+            <label>Ancho (cm)</label>
+            <input type="number" id="ancho" value="100" min="1" oninput="calcular()">
+          </div>
+          <div class="field">
+            <label>Alto (cm)</label>
+            <input type="number" id="alto" value="50" min="1" oninput="calcular()">
+          </div>
+          <div class="field">
+            <label>Peso (kg)</label>
+            <input type="number" id="peso" value="1200" min="1" oninput="calcular()">
+          </div>
+          <div class="field">
+            <label>Tipo Palé</label>
+            <input type="text" id="tipoPalet" class="computed" readonly>
+          </div>
+        </div>
+        <div id="warnLargo" class="warn-bar">⚠️ PALIBEX SOLO ACEPTA HASTA 2,4M DE LARGO</div>
+        <div id="warnPeso" class="warn-bar">⚠️ PALIBEX SOLO ACEPTA HASTA 2000 KG</div>
+      </div>
+    </div>
+
+    <!-- RUTA -->
+    <div class="card">
+      <div class="card-header">
+        <span class="icon">🗺️</span>
+        <h2>Ruta</h2>
+      </div>
+      <div class="card-body">
+        <div class="input-grid-2" style="margin-bottom:10px">
+          <div class="field">
+            <label>Origen</label>
+            <select id="origen" onchange="calcular()"></select>
+          </div>
+          <div class="field">
+            <label>Destino</label>
+            <select id="destino" onchange="calcular()"></select>
+          </div>
+        </div>
+        <div class="toggle-row">
+          <label>Llamada Previa Entrega</label>
+          <label class="toggle-switch">
+            <input type="checkbox" id="llamadaEntrega" onchange="calcular()">
+            <div class="toggle-track"></div>
+          </label>
+          <span class="toggle-label" id="llamadaLabel">NO</span>
+        </div>
+        <div id="andorraNote" class="andorra-note">
+          ★ Andorra: trámites exportación 30€ hasta un valor de 30.000€ por envío. El despacho y/o impuestos en destino son pagados por el receptor.
+        </div>
+      </div>
+    </div>
+
+    <!-- DATOS CALCULADOS -->
+    <div class="card">
+      <div class="card-header">
+        <span class="icon">📊</span>
+        <h2>Desglose de Precios</h2>
+      </div>
+      <div class="card-body">
+        <div class="precios-grid">
+          <div>
+            <div class="info-row">
+              <span class="lbl">Tarifa</span>
+              <span class="val tarif" id="r-tarifa">—</span>
+            </div>
+            <div class="info-row">
+              <span class="lbl">Zona Origen</span>
+              <span class="val zone" id="r-zonaOri">—</span>
+            </div>
+            <div class="info-row">
+              <span class="lbl">Zona Destino</span>
+              <span class="val zone" id="r-zonaDest">—</span>
+            </div>
+            <div class="info-row">
+              <span class="lbl">Precio Recogida</span>
+              <span class="val money" id="r-recogida">—</span>
+            </div>
+            <div class="info-row">
+              <span class="lbl">Precio Entrega</span>
+              <span class="val money" id="r-entrega">—</span>
+            </div>
+            <div class="info-row">
+              <span class="lbl">Arrastre</span>
+              <span class="val money" id="r-arrastre">—</span>
+            </div>
+            <div class="info-row">
+              <span class="lbl">Combustible</span>
+              <span class="val money" id="r-combustible">1,50 €</span>
+            </div>
+            <div class="info-row">
+              <span class="lbl">Llamada Entrega</span>
+              <span class="val money" id="r-llamada">—</span>
+            </div>
+            <div class="info-row" style="background:rgba(74,144,217,0.08); border-color:var(--accent)">
+              <span class="lbl" style="color:#fff">Total Expedición</span>
+              <span class="val money" id="r-total" style="font-size:18px;color:#fff">—</span>
+            </div>
+          </div>
+
+          <div class="card sobred-card" style="border:none;background:var(--row-alt);">
+            <div class="card-header" style="background:linear-gradient(90deg,#1e3a2a,#2d6040);border-radius:6px 6px 0 0;">
+              <span class="icon">⚠️</span>
+              <h2>Sobredimensión</h2>
+              <span id="sobred-badge" class="sobred-badge no" style="margin-left:auto">NO</span>
+            </div>
+            <div style="padding:10px">
+              <div class="info-row">
+                <span class="lbl">Sobred. Recogida</span>
+                <span class="val money" id="r-sobrecRec">—</span>
+              </div>
+              <div class="info-row">
+                <span class="lbl">Sobred. Entrega</span>
+                <span class="val money" id="r-sobrecEnt">—</span>
+              </div>
+              <div class="info-row">
+                <span class="lbl">Coste Total Sobred.</span>
+                <span class="val money" id="r-sobrecTotal">—</span>
+              </div>
+              <div class="info-row" style="background:rgba(232,134,58,0.08); border-color:var(--orange)">
+                <span class="lbl" style="color:var(--orange)">Sobred. Facturada</span>
+                <span class="val" id="r-sobrecFact" style="color:var(--orange);font-size:16px">—</span>
+              </div>
+              <div style="margin-top:8px;font-size:10px;color:var(--text-dim);text-align:center">
+                Redondeo al alza en tramos de 5€
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /col-left -->
+
+  <!-- RIGHT COLUMN -->
+  <div class="col-right">
+
+    <!-- CALCULADOR MULTIPALÉS -->
+    <div class="card">
+      <div class="card-header">
+        <span class="icon">📦</span>
+        <h2>Calculador Multi-Palés</h2>
+      </div>
+      <div class="card-body">
+        <table class="palets-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Largo</th>
+              <th>Ancho</th>
+              <th>Alto</th>
+              <th>Peso</th>
+              <th>Tipo</th>
+              <th>Uds</th>
+              <th>Precio/u</th>
+              <th>Total</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="palets-tbody"></tbody>
+          <tfoot>
+            <tr class="total-row">
+              <td colspan="6" style="text-align:right;font-size:11px;letter-spacing:1px">TOTAL EXPEDICIÓN:</td>
+              <td id="foot-uds">—</td>
+              <td>—</td>
+              <td id="foot-total">—</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+        <button class="add-btn" onclick="addPaletRow()">+ Añadir Palé</button>
+      </div>
+    </div>
+
+    <!-- GRAN TOTAL -->
+    <div class="full-row">
+      <div class="totales-bar">
+        <div class="total-item">
+          <div class="t-label">Total Expedición (1 palé)</div>
+          <div class="t-value gold" id="tt-expedicion">—</div>
+        </div>
+        <div class="total-sep"></div>
+        <div class="total-item">
+          <div class="t-label">Sobredimensión Facturada</div>
+          <div class="t-value" id="tt-sobred" style="color:var(--orange)">—</div>
+        </div>
+        <div class="total-sep"></div>
+        <div class="total-item">
+          <div class="t-label">Total Multi-Palés</div>
+          <div class="t-value green" id="tt-multipalets">—</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /col-right -->
+
+</div><!-- /main-layout -->
+
+<script>
+// ============================================================
+//  BASE DE DATOS
+// ============================================================
+
+const PROVINCIAS = [
+  "Gerona","Barcelona","Andorra","Tarragona","Castellón","Valencia","Alicante","Murcia",
+  "Lérida","Zaragoza","Huesca","Soria","Teruel","La Rioja","Álava","Navarra","Guipúzcoa","Vizcaya",
+  "Madrid","Burgos","Ciudad Real","León","Salamanca","Albacete","Asturias","Cantabria",
+  "Córdoba","Cuenca","Granada","Jaén","Palencia","Zamora","Almería","Badajoz","Cáceres",
+  "Cádiz","Coruña","Huelva","Lugo","Málaga","Ourense","Pontevedra","Sevilla",
+  "Ávila","Guadalajara","Segovia","Toledo","Valladolid","Grupamar"
+].sort();
+
+// RUTAS: cargadas de Excel (hoja Rutas - 2701 registros, simplificado a lookup)
+const RUTAS_TARIFA = {};
+(function(){
+  const data = [
+    ["Albacete","Alicante","Inter-franquiciados"],["Albacete","Almería","Inter-franquiciados"],
+    ["Albacete","Asturias","Inter-franquiciados"],["Albacete","Badajoz","Inter-franquiciados"],
+    ["Albacete","Barcelona","Inter-franquiciados"],["Albacete","Burgos","Inter-franquiciados"],
+    ["Albacete","Cantabria","Inter-franquiciados"],["Albacete","Castellón","Inter-franquiciados"],
+    ["Albacete","Ciudad Real","Inter-franquiciados"],["Albacete","Coruña","Inter-franquiciados"],
+    ["Albacete","Cuenca","Inter-franquiciados"],["Albacete","Cáceres","Inter-franquiciados"],
+    ["Albacete","Cádiz","Inter-franquiciados"],["Albacete","Córdoba","Inter-franquiciados"],
+    ["Albacete","Gerona","Inter-franquiciados"],["Albacete","Granada","Inter-franquiciados"],
+    ["Albacete","Guadalajara","Inter-franquiciados"],["Albacete","Guipúzcoa","Inter-franquiciados"],
+    ["Albacete","Huelva","Inter-franquiciados"],["Albacete","Huesca","Inter-franquiciados"],
+    ["Albacete","Jaén","Inter-franquiciados"],["Albacete","La Rioja","Inter-franquiciados"],
+    ["Albacete","León","Inter-franquiciados"],["Albacete","Lugo","Inter-franquiciados"],
+    ["Albacete","Lérida","Inter-franquiciados"],["Albacete","Madrid","Inter-franquiciados"],
+    ["Albacete","Murcia","Inter-franquiciados"],["Albacete","Málaga","Inter-franquiciados"],
+    ["Albacete","Navarra","Inter-franquiciados"],["Albacete","Ourense","Inter-franquiciados"],
+    ["Albacete","Palencia","Inter-franquiciados"],["Albacete","Pontevedra","Inter-franquiciados"],
+    ["Albacete","Salamanca","Inter-franquiciados"],["Albacete","Segovia","Inter-franquiciados"],
+    ["Albacete","Sevilla","Inter-franquiciados"],["Albacete","Soria","Inter-franquiciados"],
+    ["Albacete","Tarragona","Inter-franquiciados"],["Albacete","Teruel","Inter-franquiciados"],
+    ["Albacete","Toledo","Inter-franquiciados"],["Albacete","Valencia","Inter-franquiciados"],
+    ["Albacete","Valladolid","Inter-franquiciados"],["Albacete","Vizcaya","Inter-franquiciados"],
+    ["Albacete","Zamora","Inter-franquiciados"],["Albacete","Zaragoza","Inter-franquiciados"],
+    ["Albacete","Ávila","Inter-franquiciados"],
+  ];
+  // Para las rutas del Corredor Norte y Levante
+  const cnProv = ["Álava","Alicante","Guipúzcoa","La Rioja","Lérida","Murcia","Navarra","Tarragona","Valencia","Vizcaya","Zaragoza","Barcelona","Castellón","Gerona","Huesca","Soria","Teruel","Andorra","Grupamar"];
+  const clProv = ["Gerona","Barcelona","Andorra","Tarragona","Castellón","Valencia","Alicante","Murcia","Grupamar"];
+  // Todas las provincias hacen IF entre corredor/interfranquicia según la hoja Rutas
+  // Usamos la lógica completa: buscamos en RUTAS_TARIFA
+  data.forEach(r => { RUTAS_TARIFA[r[0]+'|'+r[1]] = r[2]; RUTAS_TARIFA[r[1]+'|'+r[0]] = r[2]; });
+})();
+
+// INTERFRANQUICIA zonas por provincia
+const IF_ZONAS = {
+  'ZONA 1': ['Madrid','Álava','Alicante','Burgos','Ciudad Real','La Rioja','León','Salamanca','Soria','Valencia'],
+  'ZONA 2': ['Albacete','Asturias','Cantabria','Castellón','Córdoba','Cuenca','Granada','Jaén','Palencia','Tarragona','Zamora'],
+  'ZONA 3': ['Almería','Badajoz','Cáceres','Gerona','Guipúzcoa','Huelva','Coruña','Lugo','Málaga','Ourense','Pontevedra','Sevilla','Vizcaya'],
+  'ZONA 4': ['Ávila','Guadalajara','Segovia','Toledo','Valladolid'],
+  'ZONA 5': ['Barcelona','Teruel','Zaragoza'],
+  'ZONA 6': ['Cádiz','Huesca','Lérida','Navarra'],
+  'ZONA 7': ['Grupamar'],
+  'ZONA 8': ['Andorra'],
+};
+
+const IF_TARIFAS = {
+  'ZONA 1': {P75:32.95,P150:33.45,P300:38.75,PV300:40.35,P450:40.35,P600:46.05,P800:56.45,P1200:60.05},
+  'ZONA 2': {P75:34.55,P150:35.05,P300:41.85,PV300:44.15,P450:45.55,P600:51.35,P800:67.05,P1200:73.85},
+  'ZONA 3': {P75:36.65,P150:37.15,P300:43.95,PV300:48.25,P450:50.75,P600:59.55,P800:76.85,P1200:83.35},
+  'ZONA 4': {P75:28.75,P150:29.25,P300:33.95,PV300:35.45,P450:37.35,P600:42.85,P800:49.15,P1200:53.25},
+  'ZONA 5': {P75:40.95,P150:41.45,P300:46.75,PV300:48.15,P450:49.35,P600:54.05,P800:64.45,P1200:68.05},
+  'ZONA 6': {P75:44.15,P150:44.65,P300:51.95,PV300:56.25,P450:58.75,P600:66.45,P800:84.45,P1200:90.35},
+  'ZONA 7': {P75:28.25,P150:28.75,P300:28.75,PV300:29.25,P450:29.25,P600:30.25,P800:30.25,P1200:30.75},
+};
+
+// CORREDOR NORTE - zonas
+const CN_ZONAS = {
+  'ZONA 0': ['Álava','Alicante','Guipúzcoa','La Rioja','Lérida','Murcia','Navarra','Tarragona','Valencia','Vizcaya','Zaragoza'],
+  'ZONA 1': ['Barcelona'],
+  'ZONA 2': ['Castellón','Gerona'],
+  'ZONA 3': ['Huesca','Soria','Teruel'],
+  'ZONA 4': ['Andorra'],
+  'ZONA 5': ['Alt Urgell','Cerdanya'],
+  'ZONA 6': ['Grupamar'],
+};
+const CN_TARIFAS = {
+  'ZONA 0': {P75:7.9,P150:7.9,P300:12.6,PV300:12.6,P450:14.4,P600:17.1,P800:20.3,P1200:23.9},
+  'ZONA 1': {P75:8.4,P150:8.4,P300:13.2,PV300:13.9,P450:15.3,P600:18.6,P800:22.5,P1200:25.1},
+  'ZONA 2': {P75:8.9,P150:8.9,P300:13.7,PV300:14.4,P450:15.8,P600:19.9,P800:24.6,P1200:27.7},
+  'ZONA 3': {P75:10.5,P150:10.5,P300:15.2,PV300:16.2,P450:18.1,P600:23,P800:28.8,P1200:32.4},
+  'ZONA 4': {P75:63.4,P150:63.4,P300:66.6,PV300:66.6,P450:76,P600:76,P800:85.7,P1200:91},
+  'ZONA 5': {P75:33,P150:33,P300:33,PV300:39.4,P450:45.7,P600:47.7,P800:64.6,P1200:68.2},
+  'ZONA 6': {P75:10,P150:10,P300:10,PV300:10,P450:10,P600:10,P800:10,P1200:10},
+};
+const CN_ARRASTRE = {
+  'Barcelona':  {Barcelona:31.5,Gerona:31.5,'Lérida':31.5,Andorra:37.5,Zaragoza:42.5,Huesca:42.5,Soria:42.5,Teruel:42.5,'La Rioja':48.2,'Álava':50.9,Navarra:50.9,'Guipúzcoa':51.5,Vizcaya:51.5,Tarragona:53,Grupamar:31.5},
+  'Gerona':     {Barcelona:31.5,Gerona:31.5,'Lérida':37.5,Andorra:37.5,Zaragoza:42.5,Huesca:42.5,Soria:42.5,Teruel:42.5,'La Rioja':48.2,'Álava':50.9,Navarra:50.9,'Guipúzcoa':51.5,Vizcaya:51.5,Tarragona:53,Grupamar:31.5},
+  'Lérida':     {Barcelona:37.5,Gerona:37.5,'Lérida':31.5,Andorra:31.5,Zaragoza:38.5,Huesca:38.5,Soria:38.5,Teruel:38.5,'La Rioja':44.2,'Álava':46.9,Navarra:46.9,'Guipúzcoa':49.5,Vizcaya:49.5,Tarragona:49,Grupamar:37.5},
+  'Andorra':    {Barcelona:37.5,Gerona:37.5,'Lérida':31.5,Andorra:31.5,Zaragoza:38.5,Huesca:38.5,Soria:38.5,Teruel:38.5,'La Rioja':44.2,'Álava':46.9,Navarra:46.9,'Guipúzcoa':49.5,Vizcaya:49.5,Tarragona:49,Grupamar:37.5},
+  'Zaragoza':   {Barcelona:42.5,Gerona:42.5,'Lérida':38.5,Andorra:38.5,Zaragoza:31.5,Huesca:31.5,Soria:31.5,Teruel:31.5,'La Rioja':39.2,'Álava':41.9,Navarra:41.9,'Guipúzcoa':44.5,Vizcaya:44.5,Tarragona:42,Grupamar:42.5},
+  'Huesca':     {Barcelona:42.5,Gerona:42.5,'Lérida':38.5,Andorra:38.5,Zaragoza:31.5,Huesca:31.5,Soria:31.5,Teruel:31.5,'La Rioja':39.2,'Álava':41.9,Navarra:41.9,'Guipúzcoa':44.5,Vizcaya:44.5,Tarragona:42,Grupamar:42.5},
+  'Soria':      {Barcelona:42.5,Gerona:42.5,'Lérida':38.5,Andorra:38.5,Zaragoza:31.5,Huesca:31.5,Soria:31.5,Teruel:31.5,'La Rioja':39.2,'Álava':41.9,Navarra:41.9,'Guipúzcoa':44.5,Vizcaya:44.5,Tarragona:42,Grupamar:42.5},
+  'Teruel':     {Barcelona:42.5,Gerona:42.5,'Lérida':38.5,Andorra:38.5,Zaragoza:31.5,Huesca:31.5,Soria:31.5,Teruel:31.5,'La Rioja':39.2,'Álava':41.9,Navarra:41.9,'Guipúzcoa':44.5,Vizcaya:44.5,Tarragona:42,Grupamar:42.5},
+  'La Rioja':   {Barcelona:48.2,Gerona:48.2,'Lérida':44.2,Andorra:44.2,Zaragoza:39.2,Huesca:39.2,Soria:39.2,Teruel:39.2,'La Rioja':31.5,'Álava':36.2,Navarra:36.2,'Guipúzcoa':39.8,Vizcaya:38.8,Tarragona:49.7,Grupamar:48.2},
+  'Álava':      {Barcelona:50.9,Gerona:50.9,'Lérida':46.9,Andorra:46.9,Zaragoza:41.9,Huesca:41.9,Soria:41.9,Teruel:41.9,'La Rioja':36.2,'Álava':31.5,Navarra:40.9,'Guipúzcoa':43.5,Vizcaya:36.1,Tarragona:52.4,Grupamar:50.9},
+  'Navarra':    {Barcelona:50.9,Gerona:50.9,'Lérida':46.9,Andorra:46.9,Zaragoza:41.9,Huesca:41.9,Soria:41.9,Teruel:41.9,'La Rioja':36.2,'Álava':40.9,Navarra:31.5,'Guipúzcoa':36.1,Vizcaya:43.5,Tarragona:52.4,Grupamar:50.9},
+  'Guipúzcoa':  {Barcelona:51.5,Gerona:51.5,'Lérida':49.5,Andorra:49.5,Zaragoza:44.5,Huesca:44.5,Soria:44.5,Teruel:44.5,'La Rioja':38.8,'Álava':43.5,Navarra:43.5,'Guipúzcoa':31.5,Vizcaya:46.1,Tarragona:55,Grupamar:51.5},
+  'Vizcaya':    {Barcelona:51.5,Gerona:51.5,'Lérida':49.5,Andorra:49.5,Zaragoza:44.5,Huesca:44.5,Soria:44.5,Teruel:44.5,'La Rioja':38.8,'Álava':43.5,Navarra:36.1,'Guipúzcoa':31.5,Vizcaya:46.1,Tarragona:55,Grupamar:51.5},
+  'Tarragona':  {Barcelona:51.5,Gerona:51.5,'Lérida':49.5,Andorra:49.5,Zaragoza:44.5,Huesca:44.5,Soria:44.5,Teruel:44.5,'La Rioja':38.8,'Álava':36.1,Navarra:43.5,'Guipúzcoa':46.1,Vizcaya:31.5,Tarragona:55,Grupamar:51.5},
+  'Grupamar':   {Barcelona:31.5,Gerona:31.5,'Lérida':37.5,Andorra:37.5,Zaragoza:42.5,Huesca:42.5,Soria:42.5,Teruel:42.5,'La Rioja':48.2,'Álava':50.9,Navarra:50.9,'Guipúzcoa':51.5,Vizcaya:51.5,Tarragona:53,Grupamar:0},
+};
+
+// CORREDOR LEVANTE - arrastre
+const CL_ARRASTRE = {
+  'Gerona':    {Gerona:31.5,Barcelona:31.5,Andorra:31.5,Tarragona:37,Castellón:46.2,Valencia:46.2,Alicante:50.9,Murcia:52.8,Grupamar:31.5},
+  'Barcelona': {Gerona:31.5,Barcelona:31.5,Andorra:31.5,Tarragona:37,Castellón:46.2,Valencia:46.2,Alicante:50.9,Murcia:52.8,Grupamar:31.5},
+  'Andorra':   {Gerona:31.5,Barcelona:31.5,Andorra:31.5,Tarragona:37,Castellón:46.2,Valencia:46.2,Alicante:50.9,Murcia:52.8,Grupamar:31.5},
+  'Tarragona': {Gerona:37,Barcelona:37,Andorra:37,Tarragona:31.5,Castellón:42.8,Valencia:42.8,Alicante:47.6,Murcia:51.6,Grupamar:37},
+  'Castellón': {Gerona:46.2,Barcelona:46.2,Andorra:46.2,Tarragona:42.8,Castellón:31.5,Valencia:31.5,Alicante:38.4,Murcia:42.4,Grupamar:46.2},
+  'Valencia':  {Gerona:46.2,Barcelona:46.2,Andorra:46.2,Tarragona:42.8,Castellón:31.5,Valencia:31.5,Alicante:38.4,Murcia:42.4,Grupamar:46.2},
+  'Alicante':  {Gerona:50.9,Barcelona:50.9,Andorra:50.9,Tarragona:47.6,Castellón:38.4,Valencia:38.4,Alicante:31.5,Murcia:37.7,Grupamar:50.9},
+  'Murcia':    {Gerona:52.8,Barcelona:52.8,Andorra:52.8,Tarragona:51.6,Castellón:42.4,Valencia:42.4,Alicante:37.7,Murcia:31.5,Grupamar:52.8},
+  'Grupamar':  {Gerona:31.5,Barcelona:31.5,Andorra:31.5,Tarragona:37,Castellón:46.2,Valencia:46.2,Alicante:50.9,Murcia:52.8,Grupamar:0},
+};
+
+// COSTES SOBREDIMENSIÓN por provincia
+const COSTES_SOBRED = {
+  'Álava':      {P75:14.7,P150:14.7,P300:20,PV300:20.9,P450:22.1,P600:26.3,P800:36.1,P1200:39.3},
+  'Albacete':   {P75:16.3,P150:16.3,P300:22.1,PV300:23.1,P450:24.5,P600:27.4,P800:37.4,P1200:40},
+  'Alicante':   {P75:14.7,P150:14.7,P300:20,PV300:21.1,P450:22.1,P600:25.9,P800:35.7,P1200:38.6},
+  'Almería':    {P75:17.9,P150:17.9,P300:25.2,PV300:28.7,P450:31.5,P600:38.7,P800:56.6,P1200:61.8},
+  'Asturias':   {P75:16.5,P150:16.5,P300:23,PV300:24.6,P450:26.1,P600:31.3,P800:44.1,P1200:51.3},
+  'Ávila':      {P75:10.5,P150:10.5,P300:15.2,PV300:16.2,P450:18.1,P600:23,P800:28.8,P1200:32.4},
+  'Badajoz':    {P75:17.6,P150:17.6,P300:24.8,PV300:26.2,P450:30.7,P600:37.2,P800:54.7,P1200:60.1},
+  'Barcelona':  {P75:16.8,P150:16.8,P300:23.1,PV300:25,P450:26.3,P600:31.7,P800:46.9,P1200:53.2},
+  'Burgos':     {P75:14.7,P150:14.7,P300:20,PV300:20.8,P450:22.1,P600:25.5,P800:34.1,P1200:38.5},
+  'Cáceres':    {P75:17.3,P150:17.3,P300:24.4,PV300:26,P450:29.8,P600:35.8,P800:52.9,P1200:58.5},
+  'Cádiz':      {P75:17.9,P150:17.9,P300:25.2,PV300:29,P450:31.5,P600:38.7,P800:56.6,P1200:61.8},
+  'Cantabria':  {P75:16.4,P150:16.4,P300:22.8,PV300:24.2,P450:25.9,P600:30.4,P800:43.2,P1200:48},
+  'Castellón':  {P75:16.3,P150:16.3,P300:22.1,PV300:23.3,P450:24.5,P600:28.2,P800:38.2,P1200:41.5},
+  'Ciudad Real':{P75:14.7,P150:14.7,P300:20,PV300:20.7,P450:22.1,P600:24.7,P800:34.1,P1200:36.6},
+  'Córdoba':    {P75:16.8,P150:16.8,P300:23.1,PV300:24.5,P450:26.3,P600:31.6,P800:44.8,P1200:50.4},
+  'Coruña':     {P75:17.9,P150:17.9,P300:25.2,PV300:29,P450:31.5,P600:38.6,P800:56.5,P1200:61.7},
+  'Cuenca':     {P75:16.3,P150:16.3,P300:22.1,PV300:22.9,P450:24.5,P600:27.3,P800:37.3,P1200:39.9},
+  'Gerona':     {P75:17.9,P150:17.9,P300:25.2,PV300:29,P450:31.5,P600:39.8,P800:56.6,P1200:62.6},
+  'Granada':    {P75:16.8,P150:16.8,P300:23.1,PV300:24.7,P450:26.3,P600:31.4,P800:44.8,P1200:50.1},
+  'Guadalajara':{P75:10.5,P150:10.5,P300:15.2,PV300:16.2,P450:18.1,P600:22.8,P800:28.8,P1200:32.4},
+  'Guipúzcoa':  {P75:16.5,P150:16.5,P300:23,PV300:24.6,P450:26.1,P600:30.9,P800:44.1,P1200:51.1},
+  'Huelva':     {P75:17.9,P150:17.9,P300:25.2,PV300:29,P450:31.5,P600:38.7,P800:56.6,P1200:61.8},
+  'Huesca':     {P75:16.8,P150:16.8,P300:23.1,PV300:24.5,P450:26.3,P600:31.8,P800:45,P1200:51.4},
+  'Jaén':       {P75:16.8,P150:16.8,P300:23.1,PV300:24.5,P450:26.3,P600:30.4,P800:44.7,P1200:50},
+  'La Rioja':   {P75:14.7,P150:14.7,P300:20,PV300:20.9,P450:22.1,P600:26.3,P800:36.2,P1200:39.3},
+  'León':       {P75:14.7,P150:14.7,P300:20,PV300:20.9,P450:22.1,P600:26.3,P800:36.2,P1200:39.3},
+  'Lérida':     {P75:17.9,P150:17.9,P300:25.2,PV300:28.4,P450:31.5,P600:38.5,P800:56.4,P1200:61.6},
+  'Lugo':       {P75:17.9,P150:17.9,P300:25.2,PV300:28.7,P450:31.5,P600:38.6,P800:56.5,P1200:61.7},
+  'Madrid':     {P75:8.4,P150:8.4,P300:13.2,PV300:13.9,P450:15.3,P600:18.6,P800:22.5,P1200:25.1},
+  'Málaga':     {P75:17.9,P150:17.9,P300:25.2,PV300:28.7,P450:31.5,P600:38.6,P800:56.5,P1200:61.7},
+  'Murcia':     {P75:14.7,P150:14.7,P300:20,PV300:21.1,P450:22.1,P600:25.9,P800:35.7,P1200:38.6},
+  'Navarra':    {P75:16.3,P150:16.3,P300:22.1,PV300:23.3,P450:24.5,P600:29,P800:39.5,P1200:43.1},
+  'Ourense':    {P75:17.9,P150:17.9,P300:25.2,PV300:28.7,P450:31.5,P600:38.6,P800:56.5,P1200:61.7},
+  'Palencia':   {P75:16.3,P150:16.3,P300:22.1,PV300:23.1,P450:24.5,P600:27.8,P800:37.4,P1200:43},
+  'Pontevedra': {P75:17.9,P150:17.9,P300:25.2,PV300:29,P450:31.5,P600:38.6,P800:56.5,P1200:61.7},
+  'Salamanca':  {P75:14.7,P150:14.7,P300:20,PV300:20.8,P450:22.1,P600:26.3,P800:36.2,P1200:39.3},
+  'Segovia':    {P75:10.5,P150:10.5,P300:15.2,PV300:16.2,P450:18.1,P600:23,P800:28.8,P1200:32.4},
+  'Sevilla':    {P75:17.9,P150:17.9,P300:25.2,PV300:28.7,P450:31.5,P600:38.6,P800:56.5,P1200:61.7},
+  'Soria':      {P75:14.7,P150:14.7,P300:20,PV300:20.8,P450:22.1,P600:26.3,P800:35.3,P1200:39.3},
+  'Tarragona':  {P75:16.8,P150:16.8,P300:23.1,PV300:24.9,P450:26.3,P600:31.6,P800:46.8,P1200:53.1},
+  'Teruel':     {P75:14.7,P150:14.7,P300:20,PV300:20.9,P450:22.1,P600:26.3,P800:36.2,P1200:39.3},
+  'Toledo':     {P75:10.5,P150:10.5,P300:15.2,PV300:16.2,P450:18.1,P600:21.9,P800:27.3,P1200:30.2},
+  'Valencia':   {P75:14.7,P150:14.7,P300:20,PV300:20.9,P450:22.1,P600:26.3,P800:36.2,P1200:39.3},
+  'Valladolid': {P75:10.5,P150:10.5,P300:15.2,PV300:16.2,P450:18.1,P600:23.1,P800:28.9,P1200:32.5},
+  'Vizcaya':    {P75:16.4,P150:16.4,P300:22.8,PV300:24.2,P450:25.9,P600:29.8,P800:43.2,P1200:48},
+  'Zamora':     {P75:16.3,P150:16.3,P300:22.1,PV300:23.1,P450:24.5,P600:27.8,P800:37.4,P1200:43},
+  'Zaragoza':   {P75:14.7,P150:14.7,P300:20,PV300:20.9,P450:22.1,P600:26.3,P800:36.2,P1200:39.3},
+};
+
+// ============================================================
+//  LÓGICA DE CÁLCULO (replica Excel)
+// ============================================================
+
+function getTipoPalet(largo, ancho, alto, peso, sobredimensionado) {
+  // Replica F5 del Excel
+  if (sobredimensionado) {
+    if (alto <= 66 && peso <= 165) return 'P150';
+    if (alto <= 88 && peso <= 330) return 'P300';
+    if (alto <= 180 && peso <= 495) return 'P450';
+    if (alto <= 240 && peso <= 660) return 'P600';
+    if (alto <= 198 && peso <= 880) return 'P800';
+    return 'P1200';
+  } else {
+    const maxSide = Math.max(largo, ancho), minSide = Math.min(largo, ancho);
+    if (alto <= 60 && peso <= 75 && maxSide <= 80 && minSide <= 60) return 'P75';
+    if (alto <= 66 && peso <= 165) return 'P150';
+    if (alto <= 88 && peso <= 330) return 'P300';
+    if (alto <= 220 && peso <= 300 && maxSide <= 120 && minSide <= 80) return 'PV300';
+    if (alto <= 180 && peso <= 495) return 'P450';
+    if (alto <= 240 && peso <= 660) return 'P600';
+    if (alto <= 198 && peso <= 880) return 'P800';
+    return 'P1200';
+  }
+}
+
+function isSobredimensionado(largo, ancho, peso) {
+  return largo > 132 || ancho > 110 || peso > 1320;
+}
+
+function getZonaIF(provincia) {
+  for (const [zona, provs] of Object.entries(IF_ZONAS)) {
+    if (provs.some(p => p.toLowerCase() === provincia.toLowerCase())) return zona;
+  }
+  return null;
+}
+
+function getZonaCN(provincia) {
+  for (const [zona, provs] of Object.entries(CN_ZONAS)) {
+    if (provs.some(p => p.toLowerCase() === provincia.toLowerCase())) return zona;
+  }
+  return null;
+}
+
+function getTarifa(origen, destino) {
+  // Determinar si es corredor norte, levante o interfranquicia
+  const cnProv = Object.values(CN_ARRASTRE).flatMap(v=>Object.keys(v)).filter((v,i,a)=>a.indexOf(v)===i);
+  const clProvOrig = Object.keys(CL_ARRASTRE);
+  const clProvDest = ['Gerona','Barcelona','Andorra','Tarragona','Castellón','Valencia','Alicante','Murcia','Grupamar'];
+  
+  const origenEnCN = CN_ARRASTRE[origen] !== undefined;
+  const destinoEnCN = Object.values(CN_ARRASTRE).some(v => v[destino] !== undefined);
+  const origenEnCL = CL_ARRASTRE[origen] !== undefined;
+  const destinoEnCL = clProvDest.includes(destino);
+
+  // Si ambos en corredor norte
+  if (origenEnCN && destinoEnCN) return 'Corredor Norte';
+  // Si ambos en corredor levante
+  if (origenEnCL && destinoEnCL) return 'Corredor Levante';
+  // Inter-franquiciados
+  return 'Inter-franquiciados';
+}
+
+function getPrecioRecogidaEntrega(tarifa, zona, tipoPalet) {
+  if (tarifa === 'Inter-franquiciados') {
+    return IF_TARIFAS[zona] ? (IF_TARIFAS[zona][tipoPalet] || 0) : 0;
+  } else {
+    return CN_TARIFAS[zona] ? (CN_TARIFAS[zona][tipoPalet] || 0) : 0;
+  }
+}
+
+function getArrastre(tarifa, origen, destino) {
+  if (tarifa === 'Inter-franquiciados') return 0;
+  if (tarifa === 'Corredor Norte') {
+    if (CN_ARRASTRE[origen] && CN_ARRASTRE[origen][destino] !== undefined) return CN_ARRASTRE[origen][destino];
+    if (CN_ARRASTRE[destino] && CN_ARRASTRE[destino][origen] !== undefined) return CN_ARRASTRE[destino][origen];
+    return 0;
+  }
+  if (tarifa === 'Corredor Levante') {
+    if (CL_ARRASTRE[origen] && CL_ARRASTRE[origen][destino] !== undefined) return CL_ARRASTRE[origen][destino];
+    if (CL_ARRASTRE[destino] && CL_ARRASTRE[destino][origen] !== undefined) return CL_ARRASTRE[destino][origen];
+    return 0;
+  }
+  return 0;
+}
+
+function getSobredimension(tarifa, origen, destino, tipoPalet, largo, ancho, peso, esSobred) {
+  // Sobredimensión recogida y entrega
+  let sobrecRec = 0, sobrecEnt = 0;
+  if (origen === 'Grupamar') { sobrecRec = 0; }
+  else if (esSobred) {
+    // Por dimensiones base
+    let corrLargo = largo > 120 ? 2 : 1;
+    let corrAncho = ancho > 100 ? 1 : 1; // si no excede, coef 1
+    // Para interfranquicia: precio inicial es el precio de recogida/entrega
+    if (tarifa === 'Inter-franquiciados') {
+      const zonaOri = getZonaIF(origen);
+      const precioBase = zonaOri ? (IF_TARIFAS[zonaOri]?.[tipoPalet] || 0) : 0;
+      sobrecRec = precioBase * corrLargo;
+    } else {
+      // Para corredor: tabla CostesSobred
+      const cs = COSTES_SOBRED[origen];
+      sobrecRec = cs ? (cs[tipoPalet] || 0) : 0;
+    }
+    // Sobredimensión por peso (solo si >= 1320kg)
+    if (peso >= 1320) {
+      if (tarifa === 'Inter-franquiciados') {
+        const zonaOri = getZonaIF(origen);
+        const precioBase = zonaOri ? (IF_TARIFAS[zonaOri]?.[tipoPalet] || 0) : 0;
+        sobrecRec += precioBase;
+      }
+    }
+  }
+
+  if (destino === 'Grupamar') { sobrecEnt = 0; }
+  else if (esSobred) {
+    let corrLargo = largo > 120 ? 2 : 1;
+    if (tarifa === 'Inter-franquiciados') {
+      const zonaDest = getZonaIF(destino);
+      const precioBase = zonaDest ? (IF_TARIFAS[zonaDest]?.[tipoPalet] || 0) : 0;
+      sobrecEnt = precioBase * corrLargo;
+    } else {
+      const cs = COSTES_SOBRED[destino];
+      sobrecEnt = cs ? (cs[tipoPalet] || 0) : 0;
+    }
+    if (peso >= 1320) {
+      if (tarifa === 'Inter-franquiciados') {
+        const zonaDest = getZonaIF(destino);
+        const precioBase = zonaDest ? (IF_TARIFAS[zonaDest]?.[tipoPalet] || 0) : 0;
+        sobrecEnt += precioBase;
+      }
+    }
+  }
+
+  return { sobrecRec, sobrecEnt };
+}
+
+function roundUpTo5(val) {
+  return Math.ceil(val / 5) * 5;
+}
+
+function fmt(val) {
+  if (val === null || val === undefined || isNaN(val)) return '—';
+  return val.toFixed(2).replace('.', ',') + ' €';
+}
+
+// ============================================================
+//  MULTI-PALÉS
+// ============================================================
+let paletRows = [];
+let rowCounter = 0;
+
+function addPaletRow(l=120, a=100, h=100, p=300) {
+  rowCounter++;
+  paletRows.push({ id: rowCounter, l, a, h, p, uds: 1 });
+  renderPaletsTable();
+}
+
+function delPaletRow(id) {
+  paletRows = paletRows.filter(r => r.id !== id);
+  renderPaletsTable();
+}
+
+function renderPaletsTable() {
+  const ori = document.getElementById('origen').value;
+  const dest = document.getElementById('destino').value;
+  const tarifa = getTarifa(ori, dest);
+  const zonaOri = tarifa === 'Inter-franquiciados' ? getZonaIF(ori) : getZonaCN(ori);
+  const zonaDest = tarifa === 'Inter-franquiciados' ? getZonaIF(dest) : getZonaCN(dest);
+
+  const tbody = document.getElementById('palets-tbody');
+  tbody.innerHTML = '';
+  let grandTotal = 0, grandUds = 0;
+
+  paletRows.forEach((row, i) => {
+    const sobred = isSobredimensionado(row.l, row.a, row.p);
+    const tipo = getTipoPalet(row.l, row.a, row.h, row.p, sobred);
+    const zonaUsada = tarifa === 'Inter-franquiciados' ? zonaOri : zonaOri;
+    const precioU = getPrecioRecogidaEntrega(tarifa, zonaOri, tipo)
+                  + getPrecioRecogidaEntrega(tarifa, zonaDest, tipo)
+                  + getArrastre(tarifa, ori, dest)
+                  + 1.5;
+    const total = precioU * (row.uds || 1);
+    grandTotal += total;
+    grandUds += (row.uds || 1);
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${i+1}</td>
+      <td><input type="number" value="${row.l}" min="1" onchange="updatePaletRow(${row.id},'l',this.value)"></td>
+      <td><input type="number" value="${row.a}" min="1" onchange="updatePaletRow(${row.id},'a',this.value)"></td>
+      <td><input type="number" value="${row.h}" min="1" onchange="updatePaletRow(${row.id},'h',this.value)"></td>
+      <td><input type="number" value="${row.p}" min="1" onchange="updatePaletRow(${row.id},'p',this.value)"></td>
+      <td class="tipo-cell">${tipo}</td>
+      <td><input type="number" value="${row.uds}" min="1" onchange="updatePaletRow(${row.id},'uds',this.value)"></td>
+      <td class="precio-cell">${fmt(precioU)}</td>
+      <td class="ptotal-cell">${fmt(total)}</td>
+      <td><button class="del-btn" onclick="delPaletRow(${row.id})">✕</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById('foot-uds').textContent = grandUds;
+  document.getElementById('foot-total').textContent = fmt(grandTotal);
+  document.getElementById('tt-multipalets').textContent = fmt(grandTotal);
+}
+
+function updatePaletRow(id, field, val) {
+  const row = paletRows.find(r => r.id === id);
+  if (row) { row[field] = parseFloat(val) || 1; renderPaletsTable(); }
+}
+
+// ============================================================
+//  CÁLCULO PRINCIPAL
+// ============================================================
+function calcular() {
+  const largo  = parseFloat(document.getElementById('largo').value)  || 0;
+  const ancho  = parseFloat(document.getElementById('ancho').value)  || 0;
+  const alto   = parseFloat(document.getElementById('alto').value)   || 0;
+  const peso   = parseFloat(document.getElementById('peso').value)   || 0;
+  const llamada = document.getElementById('llamadaEntrega').checked;
+
+  // Warnings
+  document.getElementById('warnLargo').classList.toggle('show', largo > 240);
+  document.getElementById('warnPeso').classList.toggle('show', peso > 2000);
+  document.getElementById('llamadaLabel').textContent = llamada ? 'SÍ' : 'NO';
+
+  // Sobredimensión y tipo
+  const esSobred = isSobredimensionado(largo, ancho, peso);
+  const tipoPalet = getTipoPalet(largo, ancho, alto, peso, esSobred);
+  const tipoInput = document.getElementById('tipoPalet');
+  tipoInput.value = tipoPalet;
+  tipoInput.className = 'computed ' + (esSobred ? 'warn' : 'ok');
+
+  // Sobredimensión badge
+  const badge = document.getElementById('sobred-badge');
+  badge.textContent = esSobred ? 'SÍ' : 'NO';
+  badge.className = 'sobred-badge ' + (esSobred ? 'yes' : 'no');
+
+  // Ruta
+  const origen  = document.getElementById('origen').value;
+  const destino = document.getElementById('destino').value;
+
+  // Andorra note
+  const isAndorra = origen === 'Andorra' || destino === 'Andorra';
+  document.getElementById('andorraNote').classList.toggle('show', isAndorra);
+
+  // Tarifa
+  const tarifa = getTarifa(origen, destino);
+  const zonaOri  = tarifa === 'Inter-franquiciados' ? getZonaIF(origen)  : getZonaCN(origen);
+  const zonaDest = tarifa === 'Inter-franquiciados' ? getZonaIF(destino) : getZonaCN(destino);
+
+  // Precios
+  const precioRec  = origen  === 'Grupamar' ? 0 : getPrecioRecogidaEntrega(tarifa, zonaOri,  tipoPalet);
+  const precioEnt  = destino === 'Grupamar' ? 0 : getPrecioRecogidaEntrega(tarifa, zonaDest, tipoPalet);
+  const arrastre   = getArrastre(tarifa, origen, destino);
+  const combustible = 1.5;
+  const llamadaCost = llamada ? 1 : 0;
+  const total = precioRec + precioEnt + arrastre + combustible + llamadaCost;
+
+  // Sobredimensión
+  const { sobrecRec, sobrecEnt } = getSobredimension(tarifa, origen, destino, tipoPalet, largo, ancho, peso, esSobred);
+  const sobrecTotal = sobrecRec + sobrecEnt;
+  const sobrecFact  = esSobred ? roundUpTo5(sobrecTotal) : 0;
+
+  const totalExpedicion = largo <= 240 ? total + sobrecFact : null;
+
+  // Render
+  document.getElementById('r-tarifa').textContent   = tarifa;
+  document.getElementById('r-zonaOri').textContent  = zonaOri  || '—';
+  document.getElementById('r-zonaDest').textContent = zonaDest || '—';
+  document.getElementById('r-recogida').textContent  = fmt(precioRec);
+  document.getElementById('r-entrega').textContent   = fmt(precioEnt);
+  document.getElementById('r-arrastre').textContent  = fmt(arrastre);
+  document.getElementById('r-llamada').textContent   = fmt(llamadaCost);
+  document.getElementById('r-total').textContent     = fmt(total);
+
+  document.getElementById('r-sobrecRec').textContent   = fmt(sobrecRec);
+  document.getElementById('r-sobrecEnt').textContent   = fmt(sobrecEnt);
+  document.getElementById('r-sobrecTotal').textContent = fmt(sobrecTotal);
+  document.getElementById('r-sobrecFact').textContent  = esSobred ? fmt(sobrecFact) : '0,00 €';
+
+  document.getElementById('tt-expedicion').textContent = totalExpedicion !== null ? fmt(totalExpedicion) : 'ERROR';
+  document.getElementById('tt-sobred').textContent = fmt(sobrecFact);
+
+  // Actualizar tabla multipalés con nueva ruta
+  renderPaletsTable();
+}
+
+// ============================================================
+//  INIT
+// ============================================================
+function init() {
+  const oriSel  = document.getElementById('origen');
+  const destSel = document.getElementById('destino');
+
+  PROVINCIAS.forEach(p => {
+    const opt1 = document.createElement('option'); opt1.value = p; opt1.textContent = p;
+    const opt2 = document.createElement('option'); opt2.value = p; opt2.textContent = p;
+    oriSel.appendChild(opt1);
+    destSel.appendChild(opt2);
+  });
+
+  // Default: Barcelona → Jaén
+  oriSel.value  = 'Barcelona';
+  destSel.value = 'Jaén';
+
+  // Añadir fila de ejemplo al multi-palés
+  addPaletRow(120, 100, 100, 300);
+
+  calcular();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+
+// ── Integración con Electron (solo si está disponible) ────────
+if (window.electronAPI) {
+  // Actualización disponible: descargando...
+  window.electronAPI.onUpdateAvailable((version) => {
+    const banner = document.getElementById('update-banner');
+    const msg    = document.getElementById('upd-msg');
+    const btn    = document.getElementById('upd-btn');
+    msg.innerHTML = `🔄 Nueva versión <strong>v${version}</strong> disponible. Descargando...`;
+    btn.style.display = 'none';
+    banner.classList.add('show');
+  });
+
+  // Actualización descargada: lista para instalar
+  window.electronAPI.onUpdateDownloaded((version) => {
+    const banner = document.getElementById('update-banner');
+    const msg    = document.getElementById('upd-msg');
+    const btn    = document.getElementById('upd-btn');
+    msg.innerHTML = `✅ Versión <strong>v${version}</strong> descargada y lista. Se instalará al cerrar, o instala ahora.`;
+    btn.style.display = 'block';
+    banner.classList.add('show');
+  });
+}
+
+function installUpdate() {
+  if (window.electronAPI) window.electronAPI.installUpdate();
+}
+</script>
+</body>
+</html>
+<script>
+// ── Registro del Service Worker (PWA) ────────────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').then((reg) => {
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            const banner = document.getElementById('update-banner');
+            const msg    = document.getElementById('upd-msg');
+            const btn    = document.getElementById('upd-btn');
+            msg.innerHTML = '✅ Nueva versión disponible. Recarga para actualizar.';
+            btn.textContent = 'Recargar';
+            btn.onclick = () => window.location.reload();
+            banner.classList.add('show');
+          }
+        });
+      });
+    });
+  });
+}
+
+// ── Botón de instalación en móvil ─────────────────────────────
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const header = document.querySelector('.app-header');
+  const installBtn = document.createElement('button');
+  installBtn.id = 'pwa-install-btn';
+  installBtn.textContent = '📲 Instalar app';
+  installBtn.style.cssText = 'background:rgba(232,184,75,0.2);border:1px solid #e8b84b;color:#e8b84b;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:Barlow,sans-serif;letter-spacing:0.5px;';
+  installBtn.addEventListener('click', async () => {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') installBtn.remove();
+    deferredPrompt = null;
+  });
+  header.appendChild(installBtn);
+});
+</script>
