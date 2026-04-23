@@ -311,7 +311,7 @@ function getCoefPeso(peso){
 
 // 9. Sobredimensión recogida — replica F11
 function getSobrecRec(tarifa, ori, tipo, precioRec, largo, ancho, peso, sobred){
-  if(norm(ori)==='Grupamar') return 10;
+  if(norm(ori)==='Grupamar') return 0;
   if(!sobred) return 0;
   const coef = getCoefDim(largo, ancho);
   let base = 0;
@@ -339,7 +339,7 @@ function getSobrecRec(tarifa, ori, tipo, precioRec, largo, ancho, peso, sobred){
 
 // 10. Sobredimensión entrega — replica F12
 function getSobrecEnt(tarifa, dest, tipo, precioEnt, largo, ancho, peso, sobred){
-  if(norm(dest)==='Grupamar') return 10;
+  if(norm(dest)==='Grupamar') return 0;
   if(!sobred) return 0;
   const coef = getCoefDim(largo, ancho);
   let base = 0;
@@ -413,8 +413,8 @@ function calc(){
 
   document.getElementById('anote').classList.toggle('show', ori==='Andorra'||dest==='Andorra');
 
-  const precRec  = ori==='Grupamar' ? 10 : getPrecio(tarifa, zonaOri, tipo);
-  const precEnt  = dest==='Grupamar'? 10 : getPrecio(tarifa, zonaDest, tipo);
+  const precRec  = (ori==='Grupamar' && tarifa!=='Inter-franquiciados') ? 10 : getPrecio(tarifa, zonaOri, tipo);
+  const precEnt  = (dest==='Grupamar' && tarifa!=='Inter-franquiciados') ? 10 : getPrecio(tarifa, zonaDest, tipo);
   const arrastre = getArrastre(tarifa, ori, dest);
   const comb     = 1.5;
   const llamCost = llamada ? 1 : 0;
@@ -468,8 +468,8 @@ function renderTabla(){
   rows.forEach((row,i)=>{
     const s = isSobred(row.l,row.a,row.p);
     const t = getTipo(row.l,row.a,row.h,row.p,s);
-    const pR= ori==='Grupamar'?10:getPrecio(tarifa,zonaOri,t);
-    const pE= dest==='Grupamar'?10:getPrecio(tarifa,zonaDest,t);
+    const pR= (ori==='Grupamar'&&tarifa!=='Inter-franquiciados')?10:getPrecio(tarifa,zonaOri,t);
+    const pE= (dest==='Grupamar'&&tarifa!=='Inter-franquiciados')?10:getPrecio(tarifa,zonaDest,t);
     const sR= getSobrecRec(tarifa,ori,t,pR,row.l,row.a,row.p,s);
     const sE= getSobrecEnt(tarifa,dest,t,pE,row.l,row.a,row.p,s);
     const metodo = document.getElementById('metodoSobred').value;
