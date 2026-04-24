@@ -88,7 +88,7 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 #upd-banner .um{color:#fff;font-size:13px;flex:1;}
 #upd-banner .ub{background:var(--gold);color:#1a2535;border:none;border-radius:6px;padding:6px 16px;font-weight:700;font-size:12px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;text-transform:uppercase;}
 #upd-banner .ux{background:transparent;border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:17px;padding:0 4px;}
-select option{background:#1a2535;}
+select option{background:#1a2535;color:#dce8f5;padding:6px;}
 /* ── HISTORIAL ── */
 .hist-panel{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:18px;}
 .hist-panel .ch{background:linear-gradient(90deg,#1a3a1a,#2d5e2d);}
@@ -645,15 +645,24 @@ function showAddCliente(){
 }
 function addCliente(){
   const inp = document.getElementById('nuevoCliente');
-  const nombre = inp.value.trim();
+  let nombre = inp.value.trim().replace(/\s+/g, ' '); // normalizar espacios
   if(!nombre) return;
   const clientes = loadClientes();
-  if(!clientes.includes(nombre)){
+  // Comparar sin distinguir mayúsculas/minúsculas ni acentos
+  const yaExiste = clientes.some(c =>
+    c.localeCompare(nombre, 'es', {sensitivity:'base'}) === 0
+  );
+  if(!yaExiste){
     clientes.push(nombre);
-    clientes.sort();
+    clientes.sort((a,b) => a.localeCompare(b, 'es'));
     saveClientes(clientes);
-    renderClientesSel();
+  } else {
+    // Usar el nombre ya existente (conservar capitalización original)
+    nombre = clientes.find(c =>
+      c.localeCompare(nombre, 'es', {sensitivity:'base'}) === 0
+    );
   }
+  renderClientesSel();
   document.getElementById('clienteSel').value = nombre;
   inp.value = '';
   document.getElementById('addClienteRow').style.display = 'none';
