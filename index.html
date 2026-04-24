@@ -612,36 +612,25 @@ window.addEventListener('beforeinstallprompt',e=>{
   b.onclick=async()=>{ dp.prompt(); const{outcome}=await dp.userChoice; if(outcome==='accepted')b.remove(); dp=null; };
   h.appendChild(b);
 });
-</script>
-</body>
-</html>
-<script>
-// ── ALMACENAMIENTO: Electron (disco) o navegador (localStorage) ──
-async function storageGet(key) {
-  if (window.electronAPI && window.electronAPI.storage) {
-    return await window.electronAPI.storage.get(key);
-  }
+// ── ALMACENAMIENTO: localStorage (Electron lo persiste en userData) ──
+function storageGet(key) {
   try { return JSON.parse(localStorage.getItem(key)); } catch(e) { return null; }
 }
-async function storageSet(key, value) {
-  if (window.electronAPI && window.electronAPI.storage) {
-    await window.electronAPI.storage.set(key, value);
-  } else {
-    localStorage.setItem(key, JSON.stringify(value));
-  }
+function storageSet(key, value) {
+  try { localStorage.setItem(key, JSON.stringify(value)); } catch(e) { console.error('storageSet error:', e); }
 }
 
 // ── CLIENTES ─────────────────────────────────────────────────
-async function loadClientes() {
-  return (await storageGet('palibex_clientes')) || [];
+function loadClientes() {
+  return storageGet('palibex_clientes') || [];
 }
-async function saveClientes(arr) {
-  await storageSet('palibex_clientes', arr);
+function saveClientes(arr) {
+  storageSet('palibex_clientes', arr);
 }
-async function renderClientesSel() {
+function renderClientesSel() {
   const sel = document.getElementById('clienteSel');
   const val = sel.value;
-  const clientes = await loadClientes();
+  const clientes = loadClientes();
   sel.innerHTML = '<option value="">— Selecciona cliente —</option>';
   clientes.forEach(c => {
     const o = document.createElement('option');
@@ -654,16 +643,16 @@ function showAddCliente(){
   document.getElementById('addClienteRow').style.display = 'block';
   document.getElementById('nuevoCliente').focus();
 }
-async function addCliente(){
+function addCliente(){
   const inp = document.getElementById('nuevoCliente');
   const nombre = inp.value.trim();
   if(!nombre) return;
-  const clientes = await loadClientes();
+  const clientes = loadClientes();
   if(!clientes.includes(nombre)){
     clientes.push(nombre);
     clientes.sort();
-    await saveClientes(clientes);
-    await renderClientesSel();
+    saveClientes(clientes);
+    renderClientesSel();
   }
   document.getElementById('clienteSel').value = nombre;
   inp.value = '';
@@ -671,14 +660,14 @@ async function addCliente(){
 }
 
 // ── HISTORIAL ─────────────────────────────────────────────────
-async function loadHistorial() {
-  return (await storageGet('palibex_historial')) || [];
+function loadHistorial() {
+  return storageGet('palibex_historial') || [];
 }
-async function saveHistorial(arr) {
-  await storageSet('palibex_historial', arr);
+function saveHistorial(arr) {
+  storageSet('palibex_historial', arr);
 }
 
-async function guardarConsulta(){
+function guardarConsulta(){
   const cliente = document.getElementById('clienteSel').value;
   if(!cliente){
     alert('Selecciona o añade un cliente antes de guardar.');
@@ -719,10 +708,10 @@ async function guardarConsulta(){
     largo, ancho, alto, peso,
     precRec, precEnt, arrastre, comb, sFact, totalExp };
 
-  const hist = await loadHistorial();
+  const hist = loadHistorial();
   hist.unshift(registro);
-  await saveHistorial(hist);
-  await renderHistorial();
+  saveHistorial(hist);
+  renderHistorial();
 
   const msg = document.getElementById('saveMsg');
   msg.textContent = `✅ Consulta guardada para ${cliente}`;
@@ -730,22 +719,22 @@ async function guardarConsulta(){
   setTimeout(() => msg.style.display = 'none', 2500);
 }
 
-async function delRegistro(idx){
-  const hist = await loadHistorial();
+function delRegistro(idx){
+  const hist = loadHistorial();
   hist.splice(idx, 1);
-  await saveHistorial(hist);
-  await renderHistorial();
+  saveHistorial(hist);
+  renderHistorial();
 }
 
-async function limpiarHistorial(){
+function limpiarHistorial(){
   if(confirm('¿Eliminar todo el historial de consultas?')){
-    await saveHistorial([]);
-    await renderHistorial();
+    saveHistorial([]);
+    renderHistorial();
   }
 }
 
-async function renderHistorial(){
-  const hist = await loadHistorial();
+function renderHistorial(){
+  const hist = loadHistorial();
   const tbody = document.getElementById('hist-tbody');
   document.getElementById('hist-count').textContent = `${hist.length} registros`;
   if(!hist.length){
@@ -776,8 +765,8 @@ async function renderHistorial(){
   });
 }
 
-async function enviarEmail(){
-  const hist = await loadHistorial();
+function enviarEmail(){
+  const hist = loadHistorial();
   if(!hist.length){ alert('No hay consultas en el historial.'); return; }
 
   const cabecera = 'FECHA\tHORA\tCLIENTE\tORIGEN\tDESTINO\tTARIFA\tTIPO\tLARGO\tANCHO\tALTO\tPESO\tRECOGIDA\tENTREGA\tARRASTRE\tCOMB.\tSOBRED.\tTOTAL';
@@ -800,8 +789,10 @@ async function enviarEmail(){
 }
 
 // Init historial y clientes al cargar
-document.addEventListener('DOMContentLoaded', async () => {
-  await renderClientesSel();
-  await renderHistorial();
+document.addEventListener('DOMContentLoaded', () => {
+  renderClientesSel();
+  renderHistorial();
 });
 </script>
+</body>
+</html>
