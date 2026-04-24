@@ -183,6 +183,7 @@ select option{background:#1a2535;color:#dce8f5;padding:6px;}
             <option value="">— Selecciona cliente —</option>
           </select>
           <button onclick="showAddCliente()">+ Nuevo</button>
+          <button onclick="limpiarDuplicados()" title="Eliminar clientes duplicados" style="background:rgba(232,134,58,.15);border:1px solid var(--orange);color:var(--orange);">🧹</button>
         </div>
         <div id="addClienteRow" style="display:none;margin-bottom:10px;">
           <div class="client-row">
@@ -643,6 +644,27 @@ function showAddCliente(){
   document.getElementById('addClienteRow').style.display = 'block';
   document.getElementById('nuevoCliente').focus();
 }
+function limpiarDuplicados(){
+  const clientes = loadClientes();
+  const vistos = new Map(); // clave normalizada -> nombre original
+  clientes.forEach(c => {
+    const clave = c.trim().replace(/\s+/g,' ').toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, ''); // sin acentos
+    if(!vistos.has(clave)) vistos.set(clave, c.trim().replace(/\s+/g,' '));
+  });
+  const limpios = Array.from(vistos.values()).sort((a,b) => a.localeCompare(b,'es'));
+  const eliminados = clientes.length - limpios.length;
+  if(eliminados === 0){
+    alert('No se han encontrado clientes duplicados.');
+    return;
+  }
+  if(confirm(`Se eliminarán ${eliminados} duplicado(s). ¿Continuar?`)){
+    saveClientes(limpios);
+    renderClientesSel();
+    alert(`✅ ${eliminados} cliente(s) duplicado(s) eliminado(s).`);
+  }
+}
+
 function addCliente(){
   const inp = document.getElementById('nuevoCliente');
   let nombre = inp.value.trim().replace(/\s+/g, ' '); // normalizar espacios
