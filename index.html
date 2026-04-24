@@ -89,6 +89,34 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 #upd-banner .ub{background:var(--gold);color:#1a2535;border:none;border-radius:6px;padding:6px 16px;font-weight:700;font-size:12px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;text-transform:uppercase;}
 #upd-banner .ux{background:transparent;border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:17px;padding:0 4px;}
 select option{background:#1a2535;}
+/* ── HISTORIAL ── */
+.hist-panel{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:18px;}
+.hist-panel .ch{background:linear-gradient(90deg,#1a3a1a,#2d5e2d);}
+.hist-table{width:100%;border-collapse:collapse;font-size:11px;}
+.hist-table thead tr{background:linear-gradient(90deg,#1a3a1a,#2d5e2d);}
+.hist-table th{padding:7px 8px;text-align:left;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.75);}
+.hist-table td{padding:5px 8px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;}
+.hist-table tr:nth-child(even) td{background:var(--roalt);}
+.hist-table tr:hover td{background:rgba(74,144,217,.08);}
+.hist-table td.cliente{font-weight:700;color:var(--gold);}
+.hist-table td.money{color:var(--green);font-family:'Barlow Condensed',sans-serif;font-weight:700;}
+.hist-table td.ruta{color:var(--acc2);font-size:10px;}
+.client-row{display:flex;gap:8px;align-items:center;margin-bottom:10px;}
+.client-row select,.client-row input{flex:1;}
+.client-row button{background:rgba(74,144,217,.2);border:1px solid var(--acc);color:var(--acc2);border-radius:6px;padding:7px 12px;cursor:pointer;font-size:12px;font-weight:600;white-space:nowrap;}
+.client-row button:hover{background:rgba(74,144,217,.35);}
+.save-btn{width:100%;background:linear-gradient(90deg,#1a3a1a,#2d5e2d);border:1px solid #4caf7d;color:#6de0a0;border-radius:8px;padding:11px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;letter-spacing:2px;text-transform:uppercase;cursor:pointer;margin-top:10px;transition:opacity .2s;}
+.save-btn:hover{opacity:.85;}
+.action-bar{display:flex;gap:8px;padding:10px 14px;background:rgba(0,0,0,.15);border-top:1px solid var(--border);}
+.action-bar button{flex:1;border-radius:6px;padding:7px 10px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid;font-family:'Barlow',sans-serif;transition:background .2s;}
+.btn-email{background:rgba(74,144,217,.15);border-color:var(--acc);color:var(--acc2);}
+.btn-email:hover{background:rgba(74,144,217,.3);}
+.btn-clear{background:rgba(224,92,92,.1);border-color:var(--red);color:var(--red);}
+.btn-clear:hover{background:rgba(224,92,92,.25);}
+.no-hist{text-align:center;color:var(--dim);padding:20px;font-size:12px;}
+.del-hist{background:transparent;border:none;color:rgba(224,92,92,.5);cursor:pointer;font-size:13px;padding:0 4px;}
+.del-hist:hover{color:var(--red);}
+
 @media(max-width:1000px){.layout{grid-template-columns:1fr;}.igrid5{grid-template-columns:repeat(3,1fr);}.tbar{grid-template-columns:1fr;gap:10px;}.tsep{display:none;}}
 @media(max-width:500px){.igrid5{grid-template-columns:repeat(2,1fr);}.app-header{padding:10px 14px;}.layout{padding:10px 10px;}}
 </style>
@@ -143,6 +171,28 @@ select option{background:#1a2535;}
           <span class="tlbl" id="llamadaLbl">NO</span>
         </div>
         <div id="anote" class="anote">★ Andorra: trámites exportación 30€ hasta valor de 30.000€. El despacho e impuestos en destino son pagados por el receptor.</div>
+      </div>
+    </div>
+
+    <!-- CLIENTE + GUARDAR -->
+    <div class="card">
+      <div class="ch"><span>👤</span><h2>Cliente</h2></div>
+      <div class="cb">
+        <div class="client-row">
+          <select id="clienteSel" style="font-size:13px;padding:7px 9px;">
+            <option value="">— Selecciona cliente —</option>
+          </select>
+          <button onclick="showAddCliente()">+ Nuevo</button>
+        </div>
+        <div id="addClienteRow" style="display:none;margin-bottom:10px;">
+          <div class="client-row">
+            <input type="text" id="nuevoCliente" placeholder="Nombre del cliente" style="font-size:13px;padding:7px 9px;">
+            <button onclick="addCliente()">Añadir</button>
+            <button onclick="document.getElementById('addClienteRow').style.display='none'" style="background:rgba(224,92,92,.15);border-color:var(--red);color:var(--red);">✕</button>
+          </div>
+        </div>
+        <button class="save-btn" onclick="guardarConsulta()">💾 Guardar Consulta</button>
+        <div id="saveMsg" style="display:none;text-align:center;font-size:11px;color:var(--green);margin-top:6px;"></div>
       </div>
     </div>
 
@@ -218,6 +268,29 @@ select option{background:#1a2535;}
     </div>
 
   </div>
+  <!-- HISTORIAL - fila completa -->
+  <div style="grid-column:1/-1;">
+    <div class="hist-panel">
+      <div class="ch"><span>📋</span><h2>Historial de Consultas</h2><span id="hist-count" style="margin-left:auto;font-size:11px;color:rgba(255,255,255,.5);">0 registros</span></div>
+      <div style="overflow-x:auto;">
+        <table class="hist-table">
+          <thead><tr>
+            <th>Fecha</th><th>Hora</th><th>Cliente</th>
+            <th>Origen</th><th>Destino</th><th>Tarifa</th>
+            <th>Tipo</th><th>Largo</th><th>Ancho</th><th>Alto</th><th>Peso</th>
+            <th>Recogida</th><th>Entrega</th><th>Arrastre</th><th>Comb.</th>
+            <th>Sobred.</th><th>Total</th><th></th>
+          </tr></thead>
+          <tbody id="hist-tbody"><tr><td colspan="18" class="no-hist">No hay consultas guardadas todavía</td></tr></tbody>
+        </table>
+      </div>
+      <div class="action-bar">
+        <button class="btn-email" onclick="enviarEmail()">📧 Enviar por email</button>
+        <button class="btn-clear" onclick="limpiarHistorial()">🗑️ Limpiar historial</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -542,3 +615,178 @@ window.addEventListener('beforeinstallprompt',e=>{
 </script>
 </body>
 </html>
+<script>
+// ── CLIENTES ─────────────────────────────────────────────────
+function loadClientes(){
+  try { return JSON.parse(localStorage.getItem('palibex_clientes')||'[]'); } catch(e){ return []; }
+}
+function saveClientes(arr){
+  localStorage.setItem('palibex_clientes', JSON.stringify(arr));
+}
+function renderClientesSel(){
+  const sel = document.getElementById('clienteSel');
+  const val = sel.value;
+  const clientes = loadClientes();
+  sel.innerHTML = '<option value="">— Selecciona cliente —</option>';
+  clientes.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c; o.textContent = c;
+    sel.appendChild(o);
+  });
+  if(val) sel.value = val;
+}
+function showAddCliente(){
+  document.getElementById('addClienteRow').style.display = 'block';
+  document.getElementById('nuevoCliente').focus();
+}
+function addCliente(){
+  const inp = document.getElementById('nuevoCliente');
+  const nombre = inp.value.trim();
+  if(!nombre) return;
+  const clientes = loadClientes();
+  if(!clientes.includes(nombre)){
+    clientes.push(nombre);
+    clientes.sort();
+    saveClientes(clientes);
+    renderClientesSel();
+  }
+  document.getElementById('clienteSel').value = nombre;
+  inp.value = '';
+  document.getElementById('addClienteRow').style.display = 'none';
+}
+
+// ── HISTORIAL ─────────────────────────────────────────────────
+function loadHistorial(){
+  try { return JSON.parse(localStorage.getItem('palibex_historial')||'[]'); } catch(e){ return []; }
+}
+function saveHistorial(arr){
+  localStorage.setItem('palibex_historial', JSON.stringify(arr));
+}
+
+function guardarConsulta(){
+  const cliente = document.getElementById('clienteSel').value;
+  if(!cliente){
+    alert('Selecciona o añade un cliente antes de guardar.');
+    return;
+  }
+
+  const largo   = parseFloat(document.getElementById('largo').value)||0;
+  const ancho   = parseFloat(document.getElementById('ancho').value)||0;
+  const alto    = parseFloat(document.getElementById('alto').value)||0;
+  const peso    = parseFloat(document.getElementById('peso').value)||0;
+  const ori     = document.getElementById('origen').value;
+  const dest    = document.getElementById('destino').value;
+  const llamada = document.getElementById('llamada').checked;
+  const metodo  = document.getElementById('metodoSobred').value;
+
+  const sobred   = isSobred(largo, ancho, peso);
+  const tipo     = getTipo(largo, ancho, alto, peso, sobred);
+  const tarifa   = getTarifa(ori, dest);
+  const zonaOri  = getZona(ori, tarifa);
+  const zonaDest = getZona(dest, tarifa);
+  const precRec  = (ori==='Grupamar'&&tarifa!=='Inter-franquiciados') ? 10 : getPrecio(tarifa, zonaOri, tipo);
+  const precEnt  = (dest==='Grupamar'&&tarifa!=='Inter-franquiciados') ? 10 : getPrecio(tarifa, zonaDest, tipo);
+  const arrastre = getArrastre(tarifa, ori, dest);
+  const comb     = 1.5;
+  const llamCost = llamada ? 1 : 0;
+  const total    = precRec + precEnt + arrastre + comb + llamCost;
+  const sRec     = getSobrecRec(tarifa, ori, tipo, precRec, largo, ancho, peso, sobred);
+  const sEnt     = getSobrecEnt(tarifa, dest, tipo, precEnt, largo, ancho, peso, sobred);
+  const sTot     = sRec + sEnt;
+  const sFact    = sobred ? calcSobFact(metodo, sTot, total) : 0;
+  const totalExp = total + sFact;
+
+  const now  = new Date();
+  const fecha = now.toLocaleDateString('es-ES');
+  const hora  = now.toLocaleTimeString('es-ES', {hour:'2-digit', minute:'2-digit'});
+
+  const registro = { fecha, hora, cliente, ori, dest, tarifa, tipo,
+    largo, ancho, alto, peso,
+    precRec, precEnt, arrastre, comb, sFact, totalExp };
+
+  const hist = loadHistorial();
+  hist.unshift(registro); // más reciente primero
+  saveHistorial(hist);
+  renderHistorial();
+
+  const msg = document.getElementById('saveMsg');
+  msg.textContent = `✅ Consulta guardada para ${cliente}`;
+  msg.style.display = 'block';
+  setTimeout(() => msg.style.display = 'none', 2500);
+}
+
+function delRegistro(idx){
+  const hist = loadHistorial();
+  hist.splice(idx, 1);
+  saveHistorial(hist);
+  renderHistorial();
+}
+
+function limpiarHistorial(){
+  if(confirm('¿Eliminar todo el historial de consultas?')){
+    saveHistorial([]);
+    renderHistorial();
+  }
+}
+
+function renderHistorial(){
+  const hist = loadHistorial();
+  const tbody = document.getElementById('hist-tbody');
+  document.getElementById('hist-count').textContent = `${hist.length} registros`;
+  if(!hist.length){
+    tbody.innerHTML = '<tr><td colspan="18" class="no-hist">No hay consultas guardadas todavía</td></tr>';
+    return;
+  }
+  tbody.innerHTML = '';
+  hist.forEach((r, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${r.fecha}</td>
+      <td>${r.hora}</td>
+      <td class="cliente">${r.cliente}</td>
+      <td class="ruta">${r.ori}</td>
+      <td class="ruta">${r.dest}</td>
+      <td style="font-size:10px;color:var(--acc2)">${r.tarifa}</td>
+      <td style="font-family:'Barlow Condensed',sans-serif;color:var(--gold)">${r.tipo}</td>
+      <td>${r.largo}</td><td>${r.ancho}</td><td>${r.alto}</td><td>${r.peso}</td>
+      <td class="money">${fmt(r.precRec)}</td>
+      <td class="money">${fmt(r.precEnt)}</td>
+      <td class="money">${fmt(r.arrastre)}</td>
+      <td class="money">${fmt(r.comb)}</td>
+      <td style="color:var(--orange);font-family:'Barlow Condensed',sans-serif;font-weight:700">${fmt(r.sFact)}</td>
+      <td class="money" style="color:#fff;font-size:13px">${fmt(r.totalExp)}</td>
+      <td><button class="del-hist" onclick="delRegistro(${i})" title="Eliminar">✕</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function enviarEmail(){
+  const hist = loadHistorial();
+  if(!hist.length){ alert('No hay consultas en el historial.'); return; }
+
+  const cabecera = 'FECHA\tHORA\tCLIENTE\tORIGEN\tDESTINO\tTARIFA\tTIPO\tLARGO\tANCHO\tALTO\tPESO\tRECOGIDA\tENTREGA\tARRASTRE\tCOMB.\tSOBRED.\tTOTAL';
+  const filas = hist.map(r =>
+    [r.fecha, r.hora, r.cliente, r.ori, r.dest, r.tarifa, r.tipo,
+     r.largo, r.ancho, r.alto, r.peso,
+     r.precRec?.toFixed(2), r.precEnt?.toFixed(2), r.arrastre?.toFixed(2),
+     r.comb?.toFixed(2), r.sFact?.toFixed(2), r.totalExp?.toFixed(2)
+    ].join('\t')
+  ).join('\n');
+
+  const cuerpo = encodeURIComponent(
+    `Historial de consultas Calculador Palibex 2026\n` +
+    `Exportado: ${new Date().toLocaleString('es-ES')}\n\n` +
+    cabecera + '\n' + filas
+  );
+
+  const asunto = encodeURIComponent('Historial Calculador Palibex 2026');
+  window.location.href = `mailto:?subject=${asunto}&body=${cuerpo}`;
+}
+
+// Init historial y clientes al cargar
+document.addEventListener('DOMContentLoaded', () => {
+  renderClientesSel();
+  renderHistorial();
+});
+</script>
