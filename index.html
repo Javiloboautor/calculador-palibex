@@ -523,9 +523,20 @@ function calc(){
 
 // ── MULTI-PALÉS ──────────────────────────────────────────────
 let rows = [], rc = 0;
-function addRow(l=120,a=100,h=170,p=1000){ rc++; rows.push({id:rc,l,a,h,p,u:1}); renderTabla(); }
+// Filas adicionales que el usuario añade (la primera fila es siempre el palé principal)
+function addRow(){
+  const l = parseFloat(document.getElementById('largo').value)||120;
+  const a = parseFloat(document.getElementById('ancho').value)||100;
+  const h = parseFloat(document.getElementById('alto').value)||170;
+  const p = parseFloat(document.getElementById('peso').value)||1000;
+  rc++; rows.push({id:rc,l,a,h,p,u:1});
+  renderTabla();
+}
 function delRow(id){ rows=rows.filter(r=>r.id!==id); renderTabla(); }
 function updRow(id,f,v){ const r=rows.find(r=>r.id===id); if(r){r[f]=parseFloat(v)||1; renderTabla();} }
+// Unidades de la fila principal (sincronizada con el calculador)
+let mainUnits = 1;
+function updMainUnits(v){ mainUnits = parseFloat(v)||1; renderTabla(); }
 
 function renderTabla(){
   const ori  = document.getElementById('origen').value;
@@ -535,11 +546,20 @@ function renderTabla(){
   const zonaDest = getZona(dest, tarifa);
   const arrastre = getArrastre(tarifa, ori, dest);
 
+  // Datos del palé principal (espejo del calculador superior)
+  const mL = parseFloat(document.getElementById('largo').value)||0;
+  const mA = parseFloat(document.getElementById('ancho').value)||0;
+  const mH = parseFloat(document.getElementById('alto').value)||0;
+  const mP = parseFloat(document.getElementById('peso').value)||0;
+
   const tbody = document.getElementById('ptbody');
   tbody.innerHTML='';
   let gTot=0, gUds=0;
 
-  rows.forEach((row,i)=>{
+  // Construir lista visual: primera fila = principal, después las del usuario
+  const todas = [{id:'main', l:mL, a:mA, h:mH, p:mP, u:mainUnits, principal:true}, ...rows];
+
+  todas.forEach((row,i)=>{
     const s = isSobred(row.l,row.a,row.p);
     const t = getTipo(row.l,row.a,row.h,row.p,s);
     const pR= (ori==='Grupamar'&&tarifa!=='Inter-franquiciados')?10:getPrecio(tarifa,zonaOri,t);
@@ -552,16 +572,31 @@ function renderTabla(){
     const pt= pu*row.u;
     gTot+=pt; gUds+=row.u;
     const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${i+1}</td>
-      <td><input type="number" value="${row.l}" min="1" onchange="updRow(${row.id},'l',this.value)"></td>
-      <td><input type="number" value="${row.a}" min="1" onchange="updRow(${row.id},'a',this.value)"></td>
-      <td><input type="number" value="${row.h}" min="1" onchange="updRow(${row.id},'h',this.value)"></td>
-      <td><input type="number" value="${row.p}" min="1" onchange="updRow(${row.id},'p',this.value)"></td>
-      <td class="tc">${t}</td>
-      <td><input type="number" value="${row.u}" min="1" onchange="updRow(${row.id},'u',this.value)"></td>
-      <td class="pc">${fmt(pu)}</td>
-      <td class="ptc">${fmt(pt)}</td>
-      <td><button class="delbtn" onclick="delRow(${row.id})">✕</button></td>`;
+    if(row.principal){
+      // Fila principal: dimensiones bloqueadas (vienen del panel superior), uds editable
+      tr.style.background='rgba(232,184,75,0.08)';
+      tr.innerHTML=`<td title="Palé principal" style="color:var(--gold);font-weight:700">★ ${i+1}</td>
+        <td style="color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-weight:700">${row.l}</td>
+        <td style="color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-weight:700">${row.a}</td>
+        <td style="color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-weight:700">${row.h}</td>
+        <td style="color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-weight:700">${row.p}</td>
+        <td class="tc">${t}</td>
+        <td><input type="number" value="${row.u}" min="1" onchange="updMainUnits(this.value)"></td>
+        <td class="pc">${fmt(pu)}</td>
+        <td class="ptc">${fmt(pt)}</td>
+        <td title="No se puede eliminar"></td>`;
+    } else {
+      tr.innerHTML=`<td>${i+1}</td>
+        <td><input type="number" value="${row.l}" min="1" onchange="updRow(${row.id},'l',this.value)"></td>
+        <td><input type="number" value="${row.a}" min="1" onchange="updRow(${row.id},'a',this.value)"></td>
+        <td><input type="number" value="${row.h}" min="1" onchange="updRow(${row.id},'h',this.value)"></td>
+        <td><input type="number" value="${row.p}" min="1" onchange="updRow(${row.id},'p',this.value)"></td>
+        <td class="tc">${t}</td>
+        <td><input type="number" value="${row.u}" min="1" onchange="updRow(${row.id},'u',this.value)"></td>
+        <td class="pc">${fmt(pu)}</td>
+        <td class="ptc">${fmt(pt)}</td>
+        <td><button class="delbtn" onclick="delRow(${row.id})">✕</button></td>`;
+    }
     tbody.appendChild(tr);
   });
   document.getElementById('ft-uds').textContent=gUds||'—';
@@ -579,7 +614,6 @@ function init(){
     oSel.appendChild(o); dSel.appendChild(d);
   });
   oSel.value='Vizcaya'; dSel.value='Lérida';
-  addRow();
   calc();
 }
 document.addEventListener('DOMContentLoaded', init);
