@@ -141,7 +141,7 @@ select option{background:#1a2535;color:#dce8f5;padding:6px;}
         <label style="font-size:11px;color:var(--lbl);text-transform:uppercase;letter-spacing:1px;font-weight:600;">Período actual:</label>
         <input type="text" id="atc-edit-periodo" style="background:var(--ibg);border:1px solid var(--iborder);border-radius:6px;color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-size:14px;padding:6px 10px;width:200px;outline:none;font-weight:700;letter-spacing:1px;">
         <span style="font-size:11px;color:var(--dim);font-style:italic;">P01: P75/P150/P300/P450 · P02: PV300/P600/P800/P1200</span>
-        <button onclick="restaurarATCPorDefecto()" style="margin-left:auto;background:rgba(232,134,58,0.15);border:1px solid var(--orange);color:var(--orange);border-radius:6px;padding:6px 12px;cursor:pointer;font-size:11px;font-weight:600;">Restaurar Abril 2026</button>
+        <button onclick="restaurarATCPorDefecto()" style="margin-left:auto;background:rgba(232,134,58,0.15);border:1px solid var(--orange);color:var(--orange);border-radius:6px;padding:6px 12px;cursor:pointer;font-size:11px;font-weight:600;">Restaurar Mayo 2026</button>
       </div>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
@@ -370,13 +370,36 @@ const DB = {"rutas": {"Albacete|Alicante": "Inter-franquiciados", "Alicante|Alba
 
 
 
-const ATC_DEFAULT = {"periodo": "Abril 2026", "corredores": {"Álava": {"01": 0.88, "02": 0.88}, "Alicante": {"01": 0.88, "02": 0.88}, "Barcelona": {"01": 1.37, "02": 1.64}, "Castellón": {"01": 1.59, "02": 1.86}, "Gerona": {"01": 1.59, "02": 1.86}, "Guipúzcoa": {"01": 0.88, "02": 0.88}, "Huesca": {"01": 1.92, "02": 2.19}, "La Rioja": {"01": 0.88, "02": 0.88}, "Lérida": {"01": 0.88, "02": 0.88}, "Murcia": {"01": 0.88, "02": 0.88}, "Navarra": {"01": 0.88, "02": 0.88}, "Soria": {"01": 1.92, "02": 2.19}, "Tarragona": {"01": 0.88, "02": 0.88}, "Teruel": {"01": 1.92, "02": 2.19}, "Valencia": {"01": 0.88, "02": 0.88}, "Vizcaya": {"01": 0.88, "02": 0.88}, "Zaragoza": {"01": 0.88, "02": 0.88}}, "interfranquicia": {"Álava": {"01": 2.17, "02": 2.45}, "Albacete": {"01": 1.88, "02": 2.15}, "Alicante": {"01": 2.43, "02": 2.7}, "Almería": {"01": 3.35, "02": 3.62}, "Asturias": {"01": 2.8, "02": 3.07}, "Ávila": {"01": 1.74, "02": 2.01}, "Badajoz": {"01": 2.72, "02": 3.0}, "Barcelona": {"01": 3.05, "02": 3.33}, "Burgos": {"01": 1.88, "02": 2.15}, "Cáceres": {"01": 2.28, "02": 2.55}, "Cádiz": {"01": 3.35, "02": 3.62}, "Cantabria": {"01": 2.65, "02": 2.92}, "Castellón": {"01": 2.58, "02": 2.85}, "Ciudad Real": {"01": 1.77, "02": 2.04}, "Córdoba": {"01": 2.58, "02": 2.85}, "Cuenca": {"01": 1.84, "02": 2.12}, "Gerona": {"01": 3.37, "02": 3.64}, "Granada": {"01": 2.87, "02": 3.14}, "Guadalajara": {"01": 1.51, "02": 1.79}, "Guipúzcoa": {"01": 2.83, "02": 3.1}, "Huelva": {"01": 3.35, "02": 3.62}, "Huesca": {"01": 2.79, "02": 3.06}, "Jaén": {"01": 2.32, "02": 2.59}, "Coruña": {"01": 3.2, "02": 3.47}, "La Rioja": {"01": 2.39, "02": 2.67}, "León": {"01": 2.58, "02": 2.85}, "Lérida": {"01": 2.6, "02": 2.87}, "Lugo": {"01": 2.87, "02": 3.14}, "Madrid": {"01": 1.37, "02": 1.64}, "Málaga": {"01": 3.2, "02": 3.47}, "Murcia": {"01": 2.39, "02": 2.67}, "Navarra": {"01": 2.43, "02": 2.7}, "Ourense": {"01": 2.91, "02": 3.18}, "Palencia": {"01": 2.14, "02": 2.41}, "Pontevedra": {"01": 3.31, "02": 3.58}, "Salamanca": {"01": 2.1, "02": 2.37}, "Segovia": {"01": 1.84, "02": 2.12}, "Sevilla": {"01": 3.02, "02": 3.29}, "Soria": {"01": 2.06, "02": 2.34}, "Tarragona": {"01": 2.83, "02": 3.1}, "Teruel": {"01": 2.43, "02": 2.7}, "Toledo": {"01": 1.66, "02": 1.93}, "Valencia": {"01": 2.32, "02": 2.59}, "Valladolid": {"01": 1.83, "02": 2.1}, "Vizcaya": {"01": 2.72, "02": 3.0}, "Zamora": {"01": 2.26, "02": 2.53}, "Zaragoza": {"01": 2.21, "02": 2.48}, "Andorra": {"01": 0, "02": 0}, "Grupamar": {"01": 0, "02": 0}}};
+const ATC_DEFAULT = {"periodo": "Mayo 2026", "corredores": {"Álava": {"01": 1.36, "02": 1.36}, "Alicante": {"01": 1.36, "02": 1.36}, "Barcelona": {"01": 2.15, "02": 2.42}, "Castellón": {"01": 2.47, "02": 2.74}, "Gerona": {"01": 2.47, "02": 2.74}, "Guipúzcoa": {"01": 1.36, "02": 1.36}, "Huesca": {"01": 2.95, "02": 3.22}, "La Rioja": {"01": 1.36, "02": 1.36}, "Lérida": {"01": 1.36, "02": 1.36}, "Murcia": {"01": 1.36, "02": 1.36}, "Navarra": {"01": 1.36, "02": 1.36}, "Soria": {"01": 2.95, "02": 3.22}, "Tarragona": {"01": 1.36, "02": 1.36}, "Teruel": {"01": 2.95, "02": 3.22}, "Valencia": {"01": 1.36, "02": 1.36}, "Vizcaya": {"01": 1.36, "02": 1.36}, "Zaragoza": {"01": 1.36, "02": 1.36}}, "interfranquicia": {"Álava": {"01": 3.32, "02": 3.59}, "Albacete": {"01": 2.9, "02": 3.17}, "Alicante": {"01": 3.7, "02": 3.97}, "Almería": {"01": 5.04, "02": 5.31}, "Asturias": {"01": 4.24, "02": 4.51}, "Ávila": {"01": 2.69, "02": 2.96}, "Badajoz": {"01": 4.13, "02": 4.4}, "Barcelona": {"01": 4.61, "02": 4.88}, "Burgos": {"01": 2.9, "02": 3.17}, "Cáceres": {"01": 3.48, "02": 3.76}, "Cádiz": {"01": 5.04, "02": 5.31}, "Cantabria": {"01": 4.02, "02": 4.29}, "Castellón": {"01": 3.91, "02": 4.19}, "Ciudad Real": {"01": 2.74, "02": 3.01}, "Córdoba": {"01": 3.91, "02": 4.19}, "Cuenca": {"01": 2.85, "02": 3.12}, "Gerona": {"01": 5.06, "02": 5.33}, "Granada": {"01": 4.34, "02": 4.61}, "Guadalajara": {"01": 2.36, "02": 2.63}, "Guipúzcoa": {"01": 4.29, "02": 4.56}, "Huelva": {"01": 5.04, "02": 5.31}, "Huesca": {"01": 4.22, "02": 4.49}, "Jaén": {"01": 3.54, "02": 3.81}, "Coruña": {"01": 4.82, "02": 5.09}, "La Rioja": {"01": 3.65, "02": 3.92}, "León": {"01": 3.91, "02": 4.19}, "Lérida": {"01": 3.95, "02": 4.22}, "Lugo": {"01": 4.34, "02": 4.61}, "Madrid": {"01": 2.15, "02": 2.42}, "Málaga": {"01": 4.82, "02": 5.09}, "Murcia": {"01": 3.65, "02": 3.92}, "Navarra": {"01": 3.7, "02": 3.97}, "Ourense": {"01": 4.4, "02": 4.67}, "Palencia": {"01": 3.27, "02": 3.54}, "Pontevedra": {"01": 4.98, "02": 5.25}, "Salamanca": {"01": 3.21, "02": 3.48}, "Segovia": {"01": 2.85, "02": 3.12}, "Sevilla": {"01": 4.55, "02": 4.83}, "Soria": {"01": 3.17, "02": 3.44}, "Tarragona": {"01": 4.29, "02": 4.56}, "Teruel": {"01": 3.7, "02": 3.97}, "Toledo": {"01": 2.58, "02": 2.85}, "Valencia": {"01": 3.54, "02": 3.81}, "Valladolid": {"01": 2.82, "02": 3.09}, "Vizcaya": {"01": 4.13, "02": 4.4}, "Zamora": {"01": 3.45, "02": 3.72}, "Zaragoza": {"01": 3.38, "02": 3.65}, "Andorra": {"01": 0, "02": 0}, "Grupamar": {"01": 0, "02": 0}}};
 
 
 // ── ATC: Ajuste Temporal Combustible ─────────────────────────
+// Orden cronológico de períodos (para detectar si los valores guardados
+// son más antiguos que los que trae la nueva versión instalada)
+const ATC_PERIODOS = ['Abril 2026', 'Mayo 2026', 'Junio 2026', 'Julio 2026',
+  'Agosto 2026', 'Septiembre 2026', 'Octubre 2026', 'Noviembre 2026', 'Diciembre 2026'];
+
 function getATC(){
   const stored = storageGet('palibex_atc');
-  return stored || ATC_DEFAULT;
+  if(!stored) return ATC_DEFAULT;
+
+  // Si el período guardado es ANTERIOR al que trae esta versión,
+  // actualizamos automáticamente al nuevo (y avisamos al usuario).
+  const idxStored  = ATC_PERIODOS.indexOf(stored.periodo);
+  const idxDefault = ATC_PERIODOS.indexOf(ATC_DEFAULT.periodo);
+  if(idxStored !== -1 && idxDefault !== -1 && idxStored < idxDefault){
+    saveATC(ATC_DEFAULT);
+    // Aviso una sola vez
+    if(!sessionStorage.getItem('atc_migrated')){
+      sessionStorage.setItem('atc_migrated', '1');
+      setTimeout(() => {
+        alert('ℹ️ Las tarifas ATC se han actualizado automáticamente a ' +
+              ATC_DEFAULT.periodo + '. Si necesitas modificarlas, usa el botón ⛽ ATC.');
+      }, 800);
+    }
+    return ATC_DEFAULT;
+  }
+  return stored;
 }
 function saveATC(data){ storageSet('palibex_atc', data); }
 
@@ -847,7 +870,7 @@ function guardarEditorATC(){
   alert('✅ Tarifas ATC actualizadas. Período: ' + periodo);
 }
 function restaurarATCPorDefecto(){
-  if(!confirm('¿Restaurar valores ATC de Abril 2026 (los originales)?')) return;
+  if(!confirm('¿Restaurar valores ATC de ' + ATC_DEFAULT.periodo + ' (los originales de esta versión)?')) return;
   saveATC(JSON.parse(JSON.stringify(ATC_DEFAULT)));
   abrirEditorATC();
   calc();
