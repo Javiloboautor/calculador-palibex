@@ -141,7 +141,7 @@ select option{background:#1a2535;color:#dce8f5;padding:6px;}
         <label style="font-size:11px;color:var(--lbl);text-transform:uppercase;letter-spacing:1px;font-weight:600;">Período actual:</label>
         <input type="text" id="atc-edit-periodo" style="background:var(--ibg);border:1px solid var(--iborder);border-radius:6px;color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-size:14px;padding:6px 10px;width:200px;outline:none;font-weight:700;letter-spacing:1px;">
         <span style="font-size:11px;color:var(--dim);font-style:italic;">P01: P75/P150/P300/P450 · P02: PV300/P600/P800/P1200</span>
-        <button onclick="restaurarATCPorDefecto()" style="margin-left:auto;background:rgba(232,134,58,0.15);border:1px solid var(--orange);color:var(--orange);border-radius:6px;padding:6px 12px;cursor:pointer;font-size:11px;font-weight:600;">Restaurar Junio 2026</button>
+        <button onclick="restaurarATCPorDefecto()" style="margin-left:auto;background:rgba(232,134,58,0.15);border:1px solid var(--orange);color:var(--orange);border-radius:6px;padding:6px 12px;cursor:pointer;font-size:11px;font-weight:600;">Restaurar Agosto 2026</button>
       </div>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
@@ -207,7 +207,7 @@ select option{background:#1a2535;color:#dce8f5;padding:6px;}
       </p>
       <div style="display:flex;gap:10px;align-items:center;justify-content:center;margin:20px 0;">
         <label style="font-size:12px;color:var(--lbl);text-transform:uppercase;letter-spacing:1px;font-weight:600;">Porcentaje:</label>
-        <input type="number" id="atc-gru-edit-pct" min="0" max="100" step="0.1" style="background:var(--ibg);border:1px solid var(--iborder);border-radius:6px;color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-size:28px;padding:8px 12px;width:120px;text-align:center;outline:none;font-weight:800;">
+        <input type="number" id="atc-gru-edit-pct" min="0" max="100" step="0.01" style="background:var(--ibg);border:1px solid var(--iborder);border-radius:6px;color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-size:28px;padding:8px 12px;width:120px;text-align:center;outline:none;font-weight:800;">
         <span style="color:var(--gold);font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:800;">%</span>
       </div>
       <div style="text-align:center;margin-bottom:20px;">
@@ -311,7 +311,7 @@ select option{background:#1a2535;color:#dce8f5;padding:6px;}
               <span class="val money" id="r-atc" style="color:var(--orange)">—</span>
             </div>
             <div class="irow" id="r-atc-gru-row" style="display:none;background:rgba(232,134,58,0.12);border-color:var(--orange)">
-              <span class="lbl" style="color:var(--orange)">ATC Grupamar <span style="font-size:9px;font-weight:400;opacity:.7" id="atc-gru-pct-tag">(15%)</span></span>
+              <span class="lbl" style="color:var(--orange)">ATC Grupamar <span style="font-size:9px;font-weight:400;opacity:.7" id="atc-gru-pct-tag">(15,00%)</span></span>
               <span class="val money" id="r-atc-gru" style="color:var(--orange);font-weight:700">—</span>
             </div>
             <div class="irow"><span class="lbl">Llamada Entrega</span><span class="val money" id="r-lla">0,00 €</span></div>
@@ -377,7 +377,7 @@ select option{background:#1a2535;color:#dce8f5;padding:6px;}
     <div style="margin-top:14px;background:linear-gradient(135deg,#5a3a14 0%,#a06a20 50%,#e8863a 100%);border:2px solid var(--gold);border-radius:10px;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:18px;box-shadow:0 4px 20px rgba(232,134,58,0.25);">
       <div style="display:flex;flex-direction:column;gap:2px;">
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.75);">Total incluyendo ATC Grupamar</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.55);font-style:italic;" id="tt-gru-detalle">(Total Expedición + 15%)</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.55);font-style:italic;" id="tt-gru-detalle">(Total Expedición + 15,00%)</div>
       </div>
       <div style="font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:800;color:#fff;line-height:1;text-shadow:0 2px 6px rgba(0,0,0,0.3);" id="tt-exp-gru">—</div>
     </div>
@@ -413,7 +413,7 @@ const DB = {"rutas": {"Albacete|Alicante": "Inter-franquiciados", "Alicante|Alba
 
 
 
-const ATC_DEFAULT = {"periodo": "Junio 2026", "corredores": {"Álava": {"01": 1.14, "02": 1.14}, "Alicante": {"01": 1.14, "02": 1.14}, "Barcelona": {"01": 1.73, "02": 2.0}, "Castellón": {"01": 1.98, "02": 2.26}, "Gerona": {"01": 1.98, "02": 2.26}, "Guipúzcoa": {"01": 1.14, "02": 1.14}, "Huesca": {"01": 2.36, "02": 2.64}, "La Rioja": {"01": 1.14, "02": 1.14}, "Lérida": {"01": 1.14, "02": 1.14}, "Murcia": {"01": 1.14, "02": 1.14}, "Navarra": {"01": 1.14, "02": 1.14}, "Soria": {"01": 2.36, "02": 2.64}, "Tarragona": {"01": 1.14, "02": 1.14}, "Teruel": {"01": 2.36, "02": 2.64}, "Valencia": {"01": 1.14, "02": 1.14}, "Vizcaya": {"01": 1.14, "02": 1.14}, "Zaragoza": {"01": 1.14, "02": 1.14}}, "interfranquicia": {"Álava": {"01": 2.66, "02": 2.93}, "Albacete": {"01": 2.32, "02": 2.59}, "Alicante": {"01": 2.96, "02": 3.23}, "Almería": {"01": 4.01, "02": 4.28}, "Asturias": {"01": 3.38, "02": 3.65}, "Ávila": {"01": 2.15, "02": 2.42}, "Badajoz": {"01": 3.29, "02": 3.57}, "Barcelona": {"01": 3.67, "02": 3.95}, "Burgos": {"01": 2.32, "02": 2.59}, "Cáceres": {"01": 2.79, "02": 3.06}, "Cádiz": {"01": 4.01, "02": 4.28}, "Cantabria": {"01": 3.21, "02": 3.48}, "Castellón": {"01": 3.13, "02": 3.4}, "Ciudad Real": {"01": 2.2, "02": 2.47}, "Córdoba": {"01": 3.13, "02": 3.4}, "Cuenca": {"01": 2.28, "02": 2.55}, "Gerona": {"01": 4.03, "02": 4.31}, "Granada": {"01": 3.46, "02": 3.73}, "Guadalajara": {"01": 1.9, "02": 2.17}, "Guipúzcoa": {"01": 3.42, "02": 3.69}, "Huelva": {"01": 4.01, "02": 4.28}, "Huesca": {"01": 3.37, "02": 3.64}, "Jaén": {"01": 2.83, "02": 3.1}, "Coruña": {"01": 3.84, "02": 4.11}, "La Rioja": {"01": 2.91, "02": 3.19}, "León": {"01": 3.13, "02": 3.4}, "Lérida": {"01": 3.15, "02": 3.43}, "Lugo": {"01": 3.46, "02": 3.73}, "Madrid": {"01": 1.73, "02": 2.0}, "Málaga": {"01": 3.84, "02": 4.11}, "Murcia": {"01": 2.91, "02": 3.19}, "Navarra": {"01": 2.96, "02": 3.23}, "Ourense": {"01": 3.51, "02": 3.78}, "Palencia": {"01": 2.62, "02": 2.89}, "Pontevedra": {"01": 3.97, "02": 4.24}, "Salamanca": {"01": 2.57, "02": 2.84}, "Segovia": {"01": 2.28, "02": 2.55}, "Sevilla": {"01": 3.63, "02": 3.9}, "Soria": {"01": 2.53, "02": 2.8}, "Tarragona": {"01": 3.42, "02": 3.69}, "Teruel": {"01": 2.96, "02": 3.23}, "Toledo": {"01": 2.07, "02": 2.34}, "Valencia": {"01": 2.83, "02": 3.1}, "Valladolid": {"01": 2.26, "02": 2.53}, "Vizcaya": {"01": 3.29, "02": 3.57}, "Zamora": {"01": 2.75, "02": 3.03}, "Zaragoza": {"01": 2.7, "02": 2.97}, "Andorra": {"01": 0, "02": 0}, "Grupamar": {"01": 0, "02": 0}}};
+const ATC_DEFAULT = {"periodo": "Agosto 2026", "corredores": {"Álava": {"01": 0.62, "02": 0.62}, "Alicante": {"01": 0.62, "02": 0.62}, "Asturias": {"01": 0.62, "02": 0.62}, "Barcelona": {"01": 0.86, "02": 1.13}, "Cantabria": {"01": 1.21, "02": 1.48}, "Castellón": {"01": 1.0, "02": 1.27}, "Gerona": {"01": 1.0, "02": 1.27}, "Guipúzcoa": {"01": 0.62, "02": 0.62}, "Huesca": {"01": 1.21, "02": 1.48}, "La Coruña": {"01": 0.62, "02": 0.62}, "La Rioja": {"01": 0.62, "02": 0.62}, "Lérida": {"01": 0.62, "02": 0.62}, "Lugo": {"01": 0.62, "02": 0.62}, "Murcia": {"01": 0.62, "02": 0.62}, "Navarra": {"01": 0.62, "02": 0.62}, "Soria": {"01": 1.21, "02": 1.48}, "Tarragona": {"01": 0.62, "02": 0.62}, "Teruel": {"01": 1.21, "02": 1.48}, "Valencia": {"01": 0.62, "02": 0.62}, "Vizcaya": {"01": 0.62, "02": 0.62}, "Zaragoza": {"01": 0.62, "02": 0.62}}, "interfranquicia": {"Álava": {"01": 1.37, "02": 1.64}, "Albacete": {"01": 1.18, "02": 1.46}, "Alicante": {"01": 1.53, "02": 1.8}, "Almería": {"01": 2.1, "02": 2.37}, "Asturias": {"01": 1.76, "02": 2.03}, "Ávila": {"01": 1.09, "02": 1.36}, "Badajoz": {"01": 1.71, "02": 1.98}, "Barcelona": {"01": 1.92, "02": 2.19}, "Burgos": {"01": 1.18, "02": 1.46}, "Cáceres": {"01": 1.44, "02": 1.71}, "Cádiz": {"01": 2.1, "02": 2.37}, "Cantabria": {"01": 1.67, "02": 1.94}, "Castellón": {"01": 1.62, "02": 1.89}, "Ciudad Real": {"01": 1.12, "02": 1.39}, "Córdoba": {"01": 1.62, "02": 1.89}, "Cuenca": {"01": 1.16, "02": 1.43}, "Gerona": {"01": 2.12, "02": 2.39}, "Granada": {"01": 1.8, "02": 2.08}, "Guadalajara": {"01": 0.95, "02": 1.23}, "Guipúzcoa": {"01": 1.78, "02": 2.05}, "Huelva": {"01": 2.1, "02": 2.37}, "Huesca": {"01": 1.75, "02": 2.02}, "Jaén": {"01": 1.46, "02": 1.73}, "Coruña": {"01": 2.01, "02": 2.28}, "La Rioja": {"01": 1.51, "02": 1.78}, "León": {"01": 1.62, "02": 1.89}, "Lérida": {"01": 1.64, "02": 1.91}, "Lugo": {"01": 1.8, "02": 2.08}, "Madrid": {"01": 0.86, "02": 1.13}, "Málaga": {"01": 2.01, "02": 2.28}, "Murcia": {"01": 1.51, "02": 1.78}, "Navarra": {"01": 1.53, "02": 1.8}, "Ourense": {"01": 1.83, "02": 2.1}, "Palencia": {"01": 1.34, "02": 1.62}, "Pontevedra": {"01": 2.08, "02": 2.35}, "Salamanca": {"01": 1.32, "02": 1.59}, "Segovia": {"01": 1.16, "02": 1.43}, "Sevilla": {"01": 1.9, "02": 2.17}, "Soria": {"01": 1.3, "02": 1.57}, "Tarragona": {"01": 1.78, "02": 2.05}, "Teruel": {"01": 1.53, "02": 1.8}, "Toledo": {"01": 1.05, "02": 1.32}, "Valencia": {"01": 1.46, "02": 1.73}, "Valladolid": {"01": 1.15, "02": 1.42}, "Vizcaya": {"01": 1.71, "02": 1.98}, "Zamora": {"01": 1.42, "02": 1.69}, "Zaragoza": {"01": 1.39, "02": 1.66}, "Andorra": {"01": 0, "02": 0}, "Grupamar": {"01": 0, "02": 0}}};
 
 
 // ── ATC: Ajuste Temporal Combustible ─────────────────────────
@@ -458,6 +458,11 @@ function calcATCGrupamar(ori, dest, totalSinGrupamar){
   // Se aplica SIEMPRE, sea cual sea origen y destino
   const pct = getATCGrupamar().porcentaje || 0;
   return totalSinGrupamar * (pct / 100);
+}
+// Formateo consistente del porcentaje ATC Grupamar (siempre 2 decimales, coma española)
+function fmtPct(v){
+  const n = parseFloat(v) || 0;
+  return n.toFixed(2).replace('.', ',');
 }
 
 // Determina si un tipo de palé es categoría 01 o 02
@@ -730,7 +735,7 @@ function calc(){
   // ATC Grupamar — siempre visible en el desglose (referido a 1 palé)
   document.getElementById('r-atc-gru-row').style.display = 'flex';
   document.getElementById('r-atc-gru').textContent = fmt(atcGrupamar);
-  document.getElementById('atc-gru-pct-tag').textContent = '(' + (getATCGrupamar().porcentaje||0) + '%)';
+  document.getElementById('atc-gru-pct-tag').textContent = '(' + fmtPct(getATCGrupamar().porcentaje) + '%)';
 
   // Nota: tt-sob, tt-multi y tt-exp-gru se actualizan en renderTabla()
   // para que tengan en cuenta todos los palés.
@@ -848,7 +853,7 @@ function renderTabla(){
   const atcGruFinal = calcATCGrupamar(ori, dest, gTot);
   const totalFinalConGru = gTot + atcGruFinal;
   document.getElementById('tt-exp-gru').textContent = gTot ? fmt(totalFinalConGru) : '—';
-  document.getElementById('tt-gru-detalle').textContent = '(' + (hayMultiples ? 'Total Multi-Palés' : 'Total Expedición') + ' + ' + (getATCGrupamar().porcentaje||0) + '%)';
+  document.getElementById('tt-gru-detalle').textContent = '(' + (hayMultiples ? 'Total Multi-Palés' : 'Total Expedición') + ' + ' + fmtPct(getATCGrupamar().porcentaje) + '%)';
 }
 
 // ── INIT ─────────────────────────────────────────────────────
@@ -991,7 +996,7 @@ function guardarEditorATCGrupamar(){
   saveATCGrupamar({ porcentaje: pct });
   cerrarEditorATCGrupamar();
   calc();
-  alert('✅ ATC Grupamar actualizado al ' + pct + '%');
+  alert('✅ ATC Grupamar actualizado al ' + fmtPct(pct) + '%');
 }
 function restaurarATCGrupamarDefault(){
   if(!confirm('¿Restaurar el ATC Grupamar al 15% por defecto?')) return;
@@ -1233,7 +1238,7 @@ function renderHistorial(){
       <td class="money">${fmt(r.arrastre)}</td>
       <td class="money">${fmt(r.comb)}</td>
       <td style="color:var(--orange);font-family:'Barlow Condensed',sans-serif" title="ATC ${r.atcPeriodo||''}">${fmt(r.atc||0)}</td>
-      <td style="color:var(--orange);font-family:'Barlow Condensed',sans-serif;font-weight:700" title="ATC Grupamar (${r.atcGrupamarPct||0}%)">${r.atcGrupamar ? fmt(r.atcGrupamar) : '—'}</td>
+      <td style="color:var(--orange);font-family:'Barlow Condensed',sans-serif;font-weight:700" title="ATC Grupamar (${fmtPct(r.atcGrupamarPct)}%)">${r.atcGrupamar ? fmt(r.atcGrupamar) : '—'}</td>
       <td style="color:var(--orange);font-family:'Barlow Condensed',sans-serif;font-weight:700">${fmt(r.sFact)}</td>
       <td>${palesTxt}</td>
       <td class="money" style="color:#fff;font-size:13px">${fmt(r.totalExp)}</td>
