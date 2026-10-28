@@ -511,19 +511,19 @@ function norm(s){ return s ? s.trim() : ''; }
 function getTipo(largo, ancho, alto, peso, sobred){
   if(sobred){
     if(alto<=66&&peso<=165) return 'P150';
-    if(alto<=120&&peso<=300) return 'P300';
-    if(alto<=180&&peso<=495) return 'P450';
-    if(alto<=240&&peso<=660) return 'P600';
+    if(alto<=132&&peso<=330) return 'P300';
+    if(alto<=198&&peso<=495) return 'P450';
+    if(alto<=242&&peso<=660) return 'P600';
     if(alto<=198&&peso<=880) return 'P800';
     return 'P1200';
   }
   const mx=Math.max(largo,ancho), mn=Math.min(largo,ancho);
   if(alto<=60&&peso<=75&&mx<=80&&mn<=60) return 'P75';
   if(alto<=66&&peso<=165) return 'P150';
-  if(alto<=120&&peso<=300) return 'P300';
+  if(alto<=132&&peso<=330) return 'P300';
   if(alto<=220&&peso<=300&&mx<=120&&mn<=80) return 'PV300';
-  if(alto<=180&&peso<=495) return 'P450';
-  if(alto<=240&&peso<=660) return 'P600';
+  if(alto<=198&&peso<=495) return 'P450';
+  if(alto<=242&&peso<=660) return 'P600';
   if(alto<=198&&peso<=880) return 'P800';
   return 'P1200';
 }
